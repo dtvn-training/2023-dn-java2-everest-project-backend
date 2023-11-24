@@ -1,6 +1,5 @@
 package com.dtvn.springbootproject.entities;
 
-import com.dtvn.springbootproject.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,10 +27,10 @@ public class Account implements UserDetails {
     @Column(name = "account_id")
     private Integer accountId;
 
-    @Column(name = "email")
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
 
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     private String password;
 
     @Column(name = "firstname")
@@ -49,23 +48,32 @@ public class Account implements UserDetails {
     @Column(name = "avatar")
     private String avatar;
 
-    @Column(name = "delete_flag")
+    @Column(name = "delete_flag", nullable = false)
     private boolean deleteFlag;
 
     @CreationTimestamp
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false, updatable = false)
     private Timestamp createdAt;
 
     @UpdateTimestamp
-    @Column(name = "updated_at")
+    @Column(name = "updated_at", nullable = false)
     private Timestamp updatedAt;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "role")
+    @ManyToOne
+    @JoinColumn(name = "role_id")
     private Role role;
+
+    @ManyToOne
+    @JoinColumn(name = "created_by")
+    private Account createdBy;
+
+    @ManyToOne
+    @JoinColumn(name = "updated_by")
+    private Account updatedBy;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority((role.name())));
+        return List.of(new SimpleGrantedAuthority((role.getRoleName())));
     }
 
     @Override

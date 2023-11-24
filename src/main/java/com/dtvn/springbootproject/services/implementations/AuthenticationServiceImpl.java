@@ -1,10 +1,11 @@
-package com.dtvn.springbootproject.services;
+package com.dtvn.springbootproject.services.implementations;
 
 //import com.dtvn.springbootproject.exceptions.AuthenticationException;
 import com.dtvn.springbootproject.requests.AuthenticationRequest;
 import com.dtvn.springbootproject.responses.AuthenticationResponse;
 import com.dtvn.springbootproject.repositories.AccountRepository;
 import com.dtvn.springbootproject.config.JwtService;
+import com.dtvn.springbootproject.services.interfaces.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,13 +15,14 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class AuthenticationService {
+public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
+    @Override
     public AuthenticationResponse login(AuthenticationRequest request) {
         try {
             authenticationManager.authenticate(

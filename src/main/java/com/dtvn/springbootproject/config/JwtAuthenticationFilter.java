@@ -1,6 +1,6 @@
 package com.dtvn.springbootproject.config;
 
-import com.dtvn.springbootproject.exceptions.AuthenticationException;
+import com.dtvn.springbootproject.exceptions.ErrorException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -75,7 +75,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter  {
                 );
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             } else {
-                throw new AuthenticationException("Token is invalid or expired", 403);
+                throw new ErrorException("Token is invalid or expired", 403);
             }
 
         }

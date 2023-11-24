@@ -11,8 +11,8 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(EmailAlreadyExistsException.class)
-    public ResponseEntity<Map<String, Object>> handleEmailAlreadyExistsException(EmailAlreadyExistsException e) {
+    @ExceptionHandler(ErrorException.class)
+    public ResponseEntity<Map<String, Object>> handleErrorException(ErrorException e) {
         Map<String, Object> response = new HashMap<>();
         response.put("code", e.getErrorCode());
         response.put("message", e.getMessage());

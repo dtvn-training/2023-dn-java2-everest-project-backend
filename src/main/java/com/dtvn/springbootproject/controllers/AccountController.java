@@ -2,18 +2,16 @@ package com.dtvn.springbootproject.controllers;
 
 import com.dtvn.springbootproject.responses.AccountResponse;
 import com.dtvn.springbootproject.requests.RegisterAnAccountRequest;
-import com.dtvn.springbootproject.services.AccountService;
+import com.dtvn.springbootproject.services.implementations.AccountServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/accounts")
 @RequiredArgsConstructor
 public class AccountController {
-    private final AccountService accountService;
+    private final AccountServiceImpl accountServiceImpl;
 
 //    @GetMapping
 //    public List<AccountResponse> getAccounts(@RequestParam(defaultValue = "0") int page,
@@ -24,7 +22,7 @@ public class AccountController {
     public ResponseEntity<AccountResponse> registerAnAccount(
             @RequestBody RegisterAnAccountRequest request
     ) {
-        return ResponseEntity.ok(accountService.registerAnAccount(request));
+        return ResponseEntity.ok(accountServiceImpl.registerAnAccount(request));
     }
 
 

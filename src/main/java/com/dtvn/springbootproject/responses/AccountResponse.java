@@ -1,6 +1,6 @@
 package com.dtvn.springbootproject.responses;
 
-import com.dtvn.springbootproject.enums.Role;
+import com.dtvn.springbootproject.entities.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,7 +15,7 @@ public class AccountResponse {
     private String firstname;
     private String lastname;
     private String email;
-    private Role role;
+    private String role;
     private String address;
     private String phone;
 }
