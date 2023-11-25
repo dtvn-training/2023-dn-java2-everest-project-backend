@@ -1,6 +1,20 @@
 ## Project folder structure
 <img src="appendix/folder_structure.png">
 
+## Note:
+- The server runs on port 8080 with domain: http://localhost:8080
+- Before you run this project, you must go to .\src\main\java\com\dtvn\springbootproject\sql, open CreateTable.sql, execute all sql in order from top to bottom
+
+## Mock account:
+
+ENDPOINT: POST /api/v1/auth/login
+```json
+{
+  "email": "quyet@mail.com",
+  "password": "Quyetka@123"
+}
+```
+
 ## Running the Project
 To run the project:
 
