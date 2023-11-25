@@ -1,9 +1,7 @@
 package com.dtvn.springbootproject.utils.validators;
 
-import com.dtvn.springbootproject.entities.Role;
 import com.dtvn.springbootproject.exceptions.ErrorException;
-import com.dtvn.springbootproject.repositories.RoleRepository;
-import com.dtvn.springbootproject.requests.RegisterAnAccountRequest;
+import com.dtvn.springbootproject.dto.requestDtos.Account.AccountRegisterRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -13,11 +11,9 @@ import static com.dtvn.springbootproject.utils.RegularExpression.*;
 @Component
 @RequiredArgsConstructor
 public class AccountValidator {
-    private final RoleRepository roleRepository;
 
-    public void validateRegisterRequest(RegisterAnAccountRequest request) {
+    public void validateRegisterRequest(AccountRegisterRequestDTO request) {
         validateEmail(request.getEmail());
-//        validateRole(request.getRole());
         validatePassword(request.getPassword());
         validateName(request.getFirstname(), "Firstname");
         validateName(request.getLastname(), "Lastname");
@@ -30,11 +26,6 @@ public class AccountValidator {
             throw new ErrorException(ERROR_EMAIL_NOT_VALID, 400);
         }
     }
-
-//    private void validateRole(String roleName) {
-//        Role role = roleRepository.findByRoleName(roleName)
-//                .orElseThrow(() -> new ErrorException(ERROR_ROLE_NOT_FOUND, 404));
-//    }
 
     private void validatePassword(String password) {
         PasswordValidator.PasswordValidationResult validationResult = PasswordValidator.validatePassword(password);

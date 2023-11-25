@@ -1,4 +1,4 @@
-package com.dtvn.springbootproject.responses;
+package com.dtvn.springbootproject.dto.responseDtos.Auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationResponse {
+public class AuthenticationResponseDTO {
     private String access_token;
     private String refresh_token;
     private int code;

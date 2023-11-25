@@ -1,11 +1,7 @@
 package com.dtvn.springbootproject.repositories;
 
-import com.dtvn.springbootproject.responses.AccountResponse;
 import com.dtvn.springbootproject.entities.Account;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 

@@ -1,4 +1,4 @@
-package com.dtvn.springbootproject.requests;
+package com.dtvn.springbootproject.dto.requestDtos.Auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationRequest {
+public class AuthenticationRequestDTO {
     private String email;
     String password;
 }

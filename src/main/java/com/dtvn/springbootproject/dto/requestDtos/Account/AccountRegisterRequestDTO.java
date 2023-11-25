@@ -1,6 +1,5 @@
-package com.dtvn.springbootproject.responses;
+package com.dtvn.springbootproject.dto.requestDtos.Account;
 
-import com.dtvn.springbootproject.entities.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,11 +9,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AccountResponse {
-    private int account_id;
+public class AccountRegisterRequestDTO {
     private String firstname;
     private String lastname;
     private String email;
+    private String password;
     private String role;
     private String address;
     private String phone;

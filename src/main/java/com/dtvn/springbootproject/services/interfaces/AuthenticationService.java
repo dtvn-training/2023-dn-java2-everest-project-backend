@@ -1,8 +1,8 @@
 package com.dtvn.springbootproject.services.interfaces;
 
-import com.dtvn.springbootproject.requests.AuthenticationRequest;
-import com.dtvn.springbootproject.responses.AuthenticationResponse;
+import com.dtvn.springbootproject.dto.requestDtos.Auth.AuthenticationRequestDTO;
+import com.dtvn.springbootproject.dto.responseDtos.Auth.AuthenticationResponseDTO;
 
 public interface AuthenticationService {
-    AuthenticationResponse login(AuthenticationRequest request);
+    AuthenticationResponseDTO login(AuthenticationRequestDTO request);
 }

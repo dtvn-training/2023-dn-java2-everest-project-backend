@@ -3,25 +3,20 @@ package com.dtvn.springbootproject.services.implementations;
 import com.dtvn.springbootproject.entities.Role;
 import com.dtvn.springbootproject.exceptions.ErrorException;
 import com.dtvn.springbootproject.repositories.RoleRepository;
-import com.dtvn.springbootproject.requests.RegisterAnAccountRequest;
-import com.dtvn.springbootproject.responses.AccountResponse;
+import com.dtvn.springbootproject.dto.requestDtos.Account.AccountRegisterRequestDTO;
+import com.dtvn.springbootproject.dto.responseDtos.Account.AccountResponseDTO;
 import com.dtvn.springbootproject.entities.Account;
 import com.dtvn.springbootproject.repositories.AccountRepository;
 import com.dtvn.springbootproject.services.interfaces.AccountService;
-import com.dtvn.springbootproject.utils.RegularExpression;
 import com.dtvn.springbootproject.utils.validators.AccountValidator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import static com.dtvn.springbootproject.constants.ErrorConstants.*;
-import static com.dtvn.springbootproject.utils.RegularExpression.*;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +27,7 @@ public class AccountServiceImpl implements AccountService {
     private final AccountValidator accountValidator;
 
     @Override
-    public AccountResponse registerAnAccount(RegisterAnAccountRequest request) {
+    public AccountResponseDTO registerAnAccount(AccountRegisterRequestDTO request) {
 
         accountValidator.validateRegisterRequest(request);
 
@@ -59,7 +54,7 @@ public class AccountServiceImpl implements AccountService {
             throw new IllegalStateException("Failed to save the account.", e);
         }
 
-        return AccountResponse.builder()
+        return AccountResponseDTO.builder()
                 .account_id(account.getAccountId())
                 .firstname(account.getFirstname())
                 .lastname(account.getLastname())

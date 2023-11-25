@@ -1,7 +1,7 @@
 package com.dtvn.springbootproject.controllers;
 
-import com.dtvn.springbootproject.requests.AuthenticationRequest;
-import com.dtvn.springbootproject.responses.AuthenticationResponse;
+import com.dtvn.springbootproject.dto.requestDtos.Auth.AuthenticationRequestDTO;
+import com.dtvn.springbootproject.dto.responseDtos.Auth.AuthenticationResponseDTO;
 import com.dtvn.springbootproject.services.implementations.AuthenticationServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +16,8 @@ public class AuthenticationController {
 
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> authenticate(
-            @RequestBody AuthenticationRequest request
+    public ResponseEntity<AuthenticationResponseDTO> authenticate(
+            @RequestBody AuthenticationRequestDTO request
     ) {
         return ResponseEntity.ok(authenticationServiceImpl.login(request));
     }

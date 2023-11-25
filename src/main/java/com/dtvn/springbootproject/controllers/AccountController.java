@@ -1,7 +1,7 @@
 package com.dtvn.springbootproject.controllers;
 
-import com.dtvn.springbootproject.responses.AccountResponse;
-import com.dtvn.springbootproject.requests.RegisterAnAccountRequest;
+import com.dtvn.springbootproject.dto.responseDtos.Account.AccountResponseDTO;
+import com.dtvn.springbootproject.dto.requestDtos.Account.AccountRegisterRequestDTO;
 import com.dtvn.springbootproject.services.implementations.AccountServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +19,8 @@ public class AccountController {
 //        return accountService.getAccounts(page, size);
 //    }
     @PostMapping
-    public ResponseEntity<AccountResponse> registerAnAccount(
-            @RequestBody RegisterAnAccountRequest request
+    public ResponseEntity<AccountResponseDTO> registerAnAccount(
+            @RequestBody AccountRegisterRequestDTO request
     ) {
         return ResponseEntity.ok(accountServiceImpl.registerAnAccount(request));
     }
