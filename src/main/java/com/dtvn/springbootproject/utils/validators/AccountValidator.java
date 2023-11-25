@@ -2,6 +2,7 @@ package com.dtvn.springbootproject.utils.validators;
 
 import com.dtvn.springbootproject.exceptions.ErrorException;
 import com.dtvn.springbootproject.dto.requestDtos.Account.AccountRegisterRequestDTO;
+import com.dtvn.springbootproject.repositories.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -11,6 +12,7 @@ import static com.dtvn.springbootproject.utils.RegularExpression.*;
 @Component
 @RequiredArgsConstructor
 public class AccountValidator {
+    private final AccountRepository accountRepository;
 
     public void validateRegisterRequest(AccountRegisterRequestDTO request) {
         validateEmail(request.getEmail());
@@ -22,6 +24,9 @@ public class AccountValidator {
     }
 
     private void validateEmail(String email) {
+        if (accountRepository.existsByEmail(email)) {
+            throw new ErrorException(ERROR_EMAIL_ALREADY_EXISTS,400);
+        }
         if (email == null || !email.matches(EMAIL_REGEX)) {
             throw new ErrorException(ERROR_EMAIL_NOT_VALID, 400);
         }
