@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,4 +40,14 @@ public class AccountController {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         return accountServiceImpl.getAccountByEmailOrName(emailOrName, pageable);
     }
+    @DeleteMapping()
+    public ResponseEntity<String> deleteAccount(@RequestParam(value = "id", required = true) Integer id) {
+        try {
+            accountServiceImpl.deleteAccount(id);
+            return new ResponseEntity<>("Delete successful", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error during delete", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

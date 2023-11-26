@@ -9,7 +9,10 @@ import com.dtvn.springbootproject.entities.Account;
 import com.dtvn.springbootproject.repositories.AccountRepository;
 import com.dtvn.springbootproject.services.interfaces.AccountService;
 import com.dtvn.springbootproject.utils.validators.AccountValidator;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -96,6 +99,27 @@ public class AccountServiceImpl implements AccountService {
             return accountRepository.findByName(emailOrName, pageable);
 
        }
+    }
+
+    @Override
+    @Transactional
+    public void deleteAccount(Integer id) {
+        Account existingAccount = accountRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Account not found"));
+        existingAccount.setDeleteFlag(true);
+        accountRepository.save(existingAccount);
+    }
+
+    @Override
+    public Account updatedAccount(Integer id, Account updatedAccount) {
+        Optional<Account> optionalOldAccount = accountRepository.findById(id);
+        if(optionalOldAccount.isPresent()){
+            Account oldAccount  =  optionalOldAccount.get();
+            BeanUtils.copyProperties(updatedAccount, oldAccount, "account_id");
+            return accountRepository.save(oldAccount);
+        }else {
+            throw new ErrorException("Account not found with id: "  + id,  404);
+        }
     }
 
 }

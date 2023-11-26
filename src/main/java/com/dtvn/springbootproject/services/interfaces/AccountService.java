@@ -11,6 +11,8 @@ import java.util.List;
 public interface AccountService {
     AccountResponseDTO registerAnAccount(AccountRegisterRequestDTO request);
     Page<Account> getAccountByEmailOrName(String emailOrName, Pageable pageable);
+    void deleteAccount(Integer id);
+    public Account updatedAccount(Integer id, Account account);
 
 
 }
