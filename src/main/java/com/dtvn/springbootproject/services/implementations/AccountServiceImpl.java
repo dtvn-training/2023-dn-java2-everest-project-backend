@@ -10,13 +10,19 @@ import com.dtvn.springbootproject.repositories.AccountRepository;
 import com.dtvn.springbootproject.services.interfaces.AccountService;
 import com.dtvn.springbootproject.utils.validators.AccountValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 import static com.dtvn.springbootproject.constants.ErrorConstants.*;
+import static com.dtvn.springbootproject.utils.RegularExpression.EMAIL_REGEX;
 
 @Service
 @RequiredArgsConstructor
@@ -79,6 +85,17 @@ public class AccountServiceImpl implements AccountService {
         }
 
         throw new IllegalStateException("Authenticated user is not an instance of UserDetails.");
+    }
+    @Override
+    public Page<Account> getAccountByEmailOrName(String emailOrName,  Pageable pageable) {
+       if(emailOrName == null || emailOrName.isEmpty()){
+           return accountRepository.findAll(pageable);
+       } else if(emailOrName.matches(EMAIL_REGEX)){
+               return accountRepository.findByEmail(emailOrName, pageable);
+       } else{
+            return accountRepository.findByName(emailOrName, pageable);
+
+       }
     }
 
 }
