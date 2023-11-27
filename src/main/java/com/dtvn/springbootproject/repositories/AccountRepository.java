@@ -1,5 +1,6 @@
 package com.dtvn.springbootproject.repositories;
 
+import com.dtvn.springbootproject.dto.responseDtos.Account.AccountResponseDTO;
 import com.dtvn.springbootproject.entities.Account;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,9 +15,10 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
     Optional<Account> findByEmail(String email);
     boolean existsByEmail(String email);
     @Query("SELECT a FROM Account a WHERE LOWER(a.lastname) LIKE LOWER(concat('%', :lastName, '%'))")
-    Page<Account> findByName(String lastName, Pageable pageable);
-    Page<Account> findByEmail(String email, Pageable  pageable);
-//    @Modifying
-//    @Query("UPDATE Account a SET a.deleteFlag = 1 WHERE a.accountId = :accountId")
-//    void deleteAccountById(@Param("accountId") Integer accountId);
+    Page<AccountResponseDTO> findByName(String lastName, Pageable pageable);
+    Page<AccountResponseDTO> findByEmail(String email, Pageable  pageable);
+
+    @Query("SELECT a FROM Account a WHERE a.deleteFlag = 0")
+    Page<Account> getAllAccount(Pageable pageable);
+
 }

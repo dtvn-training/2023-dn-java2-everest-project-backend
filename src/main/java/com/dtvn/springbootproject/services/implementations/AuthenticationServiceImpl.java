@@ -5,7 +5,7 @@ import com.dtvn.springbootproject.dto.requestDtos.Auth.AuthenticationRequestDTO;
 import com.dtvn.springbootproject.dto.responseDtos.Auth.AuthenticationResponseDTO;
 import com.dtvn.springbootproject.repositories.AccountRepository;
 import com.dtvn.springbootproject.config.JwtService;
-import com.dtvn.springbootproject.services.interfaces.AuthenticationService;
+import com.dtvn.springbootproject.services.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

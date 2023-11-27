@@ -7,12 +7,11 @@ import com.dtvn.springbootproject.dto.requestDtos.Account.AccountRegisterRequest
 import com.dtvn.springbootproject.dto.responseDtos.Account.AccountResponseDTO;
 import com.dtvn.springbootproject.entities.Account;
 import com.dtvn.springbootproject.repositories.AccountRepository;
-import com.dtvn.springbootproject.services.interfaces.AccountService;
+import com.dtvn.springbootproject.services.AccountService;
 import com.dtvn.springbootproject.utils.validators.AccountValidator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
-import org.springframework.data.crossstore.ChangeSetPersister;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -21,7 +20,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 import static com.dtvn.springbootproject.constants.ErrorConstants.*;
@@ -34,7 +32,7 @@ public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
     private final RoleRepository roleRepository;
     private final AccountValidator accountValidator;
-
+    private final ModelMapper mapper = new ModelMapper();
     @Override
     public AccountResponseDTO registerAnAccount(AccountRegisterRequestDTO request) {
 
@@ -64,7 +62,7 @@ public class AccountServiceImpl implements AccountService {
         }
 
         return AccountResponseDTO.builder()
-                .account_id(account.getAccountId())
+                .accountId(account.getAccountId())
                 .firstname(account.getFirstname())
                 .lastname(account.getLastname())
                 .email(account.getEmail())
@@ -90,14 +88,14 @@ public class AccountServiceImpl implements AccountService {
         throw new IllegalStateException("Authenticated user is not an instance of UserDetails.");
     }
     @Override
-    public Page<Account> getAccountByEmailOrName(String emailOrName,  Pageable pageable) {
+    public Page<AccountResponseDTO> getAccountByEmailOrName(String emailOrName,  Pageable pageable) {
        if(emailOrName == null || emailOrName.isEmpty()){
-           return accountRepository.findAll(pageable);
+           Page<Account> allAccount = accountRepository.getAllAccount(pageable);
+           return allAccount.map(account -> mapper.map(account, AccountResponseDTO.class));
        } else if(emailOrName.matches(EMAIL_REGEX)){
                return accountRepository.findByEmail(emailOrName, pageable);
        } else{
             return accountRepository.findByName(emailOrName, pageable);
-
        }
     }
 
@@ -109,17 +107,26 @@ public class AccountServiceImpl implements AccountService {
         existingAccount.setDeleteFlag(true);
         accountRepository.save(existingAccount);
     }
-
     @Override
-    public Account updatedAccount(Integer id, Account updatedAccount) {
+    public Account updatedAccount(Integer id, AccountResponseDTO updatedAccount) {
         Optional<Account> optionalOldAccount = accountRepository.findById(id);
         if(optionalOldAccount.isPresent()){
             Account oldAccount  =  optionalOldAccount.get();
-            BeanUtils.copyProperties(updatedAccount, oldAccount, "account_id");
+            oldAccount.setEmail(updatedAccount.getEmail());
+            oldAccount.setFirstname(updatedAccount.getFirstname());
+            oldAccount.setLastname(updatedAccount.getLastname());
+            oldAccount.setAddress(updatedAccount.getAddress());
+            oldAccount.setPhone(updatedAccount.getPhone());
+            //find role id by role name
+            Optional<Role> roleUpdate = roleRepository.findByRoleName(updatedAccount.getRole());
+            if(roleUpdate.isPresent()){
+                oldAccount.setRole(roleUpdate.get());
+            }else{
+                throw new ErrorException(ERROR_ROLE_NOT_FOUND, 404);
+            }
             return accountRepository.save(oldAccount);
         }else {
             throw new ErrorException("Account not found with id: "  + id,  404);
         }
     }
-
 }

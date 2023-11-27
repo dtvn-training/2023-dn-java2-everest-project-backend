@@ -21,11 +21,6 @@ import java.util.List;
 public class AccountController {
     private final AccountServiceImpl accountServiceImpl;
 
-//    @GetMapping
-//    public List<AccountResponse> getAccounts(@RequestParam(defaultValue = "0") int page,
-//                                             @RequestParam(defaultValue = "3") int size) {
-//        return accountService.getAccounts(page, size);
-//    }
     @PostMapping
     public ResponseEntity<AccountResponseDTO> registerAnAccount(
             @RequestBody AccountRegisterRequestDTO request
@@ -33,20 +28,29 @@ public class AccountController {
         return ResponseEntity.ok(accountServiceImpl.registerAnAccount(request));
     }
     @GetMapping
-    public Page<Account> getAccounts(@RequestParam(value = "emailOrName", required = false) String emailOrName,
+    public Page<AccountResponseDTO> getAccounts(@RequestParam(value = "emailOrName", required = false) String emailOrName,
                                      @RequestParam(value = "pageNo", defaultValue = AppContants.DEFAULT_PAGE_NUMBER,required = false) int pageNo,
                                      @RequestParam(value = "pageSize", defaultValue = AppContants.DEFAULT_PAGE_SIZE, required = false) int pageSize) {
-
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         return accountServiceImpl.getAccountByEmailOrName(emailOrName, pageable);
     }
-    @DeleteMapping()
+    @PatchMapping()
     public ResponseEntity<String> deleteAccount(@RequestParam(value = "id", required = true) Integer id) {
         try {
             accountServiceImpl.deleteAccount(id);
             return new ResponseEntity<>("Delete successful", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Error during delete", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @PutMapping
+    public ResponseEntity<Account> updateAccount(@RequestParam(value = "id", required = true) Integer accountId,
+                                                 @RequestBody AccountResponseDTO updatedAccount){
+        Account accountUpdated = accountServiceImpl.updatedAccount(accountId, updatedAccount);
+        if (accountUpdated != null) {
+            return ResponseEntity.ok(accountUpdated);
+        } else {
+            return ResponseEntity.notFound().build();
         }
     }
 

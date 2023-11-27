@@ -1,4 +1,4 @@
-package com.dtvn.springbootproject.services.interfaces;
+package com.dtvn.springbootproject.services;
 
 import com.dtvn.springbootproject.dto.requestDtos.Account.AccountRegisterRequestDTO;
 import com.dtvn.springbootproject.dto.responseDtos.Account.AccountResponseDTO;
@@ -10,9 +10,9 @@ import java.util.List;
 
 public interface AccountService {
     AccountResponseDTO registerAnAccount(AccountRegisterRequestDTO request);
-    Page<Account> getAccountByEmailOrName(String emailOrName, Pageable pageable);
+    Page<AccountResponseDTO> getAccountByEmailOrName(String emailOrName, Pageable pageable);
     void deleteAccount(Integer id);
-    public Account updatedAccount(Integer id, Account account);
+    public Account updatedAccount(Integer id, AccountResponseDTO account);
 
 
 }
