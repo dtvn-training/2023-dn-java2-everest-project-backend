@@ -2,7 +2,7 @@ package com.dtvn.springbootproject.controllers;
 
 import com.dtvn.springbootproject.dto.responseDtos.Account.AccountResponseDTO;
 import com.dtvn.springbootproject.dto.requestDtos.Account.AccountRegisterRequestDTO;
-import com.dtvn.springbootproject.services.implementations.AccountServiceImpl;
+import com.dtvn.springbootproject.services.impl.AccountServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

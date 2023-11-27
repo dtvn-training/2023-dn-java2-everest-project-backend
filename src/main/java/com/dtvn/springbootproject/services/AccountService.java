@@ -1,4 +1,4 @@
-package com.dtvn.springbootproject.services.interfaces;
+package com.dtvn.springbootproject.services;
 
 import com.dtvn.springbootproject.dto.requestDtos.Account.AccountRegisterRequestDTO;
 import com.dtvn.springbootproject.dto.responseDtos.Account.AccountResponseDTO;

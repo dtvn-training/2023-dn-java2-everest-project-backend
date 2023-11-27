@@ -1,4 +1,4 @@
-package com.dtvn.springbootproject.services.implementations;
+package com.dtvn.springbootproject.services.impl;
 
 import com.dtvn.springbootproject.entities.Role;
 import com.dtvn.springbootproject.exceptions.ErrorException;
@@ -7,7 +7,7 @@ import com.dtvn.springbootproject.dto.requestDtos.Account.AccountRegisterRequest
 import com.dtvn.springbootproject.dto.responseDtos.Account.AccountResponseDTO;
 import com.dtvn.springbootproject.entities.Account;
 import com.dtvn.springbootproject.repositories.AccountRepository;
-import com.dtvn.springbootproject.services.interfaces.AccountService;
+import com.dtvn.springbootproject.services.AccountService;
 import com.dtvn.springbootproject.utils.validators.AccountValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
