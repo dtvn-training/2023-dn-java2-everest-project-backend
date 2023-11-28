@@ -13,11 +13,6 @@ import org.springframework.web.bind.annotation.*;
 public class AccountController {
     private final AccountServiceImpl accountServiceImpl;
 
-//    @GetMapping
-//    public List<AccountResponse> getAccounts(@RequestParam(defaultValue = "0") int page,
-//                                             @RequestParam(defaultValue = "3") int size) {
-//        return accountService.getAccounts(page, size);
-//    }
     @PostMapping
     public ResponseEntity<AccountResponseDTO> registerAnAccount(
             @RequestBody AccountRegisterRequestDTO request
