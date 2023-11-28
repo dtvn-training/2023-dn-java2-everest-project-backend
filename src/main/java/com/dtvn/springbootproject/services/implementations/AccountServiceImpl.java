@@ -8,6 +8,7 @@ import com.dtvn.springbootproject.dto.responseDtos.Account.AccountResponseDTO;
 import com.dtvn.springbootproject.entities.Account;
 import com.dtvn.springbootproject.repositories.AccountRepository;
 import com.dtvn.springbootproject.services.AccountService;
+import com.dtvn.springbootproject.utils.AppContants;
 import com.dtvn.springbootproject.utils.validators.AccountValidator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -103,7 +104,7 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     public void deleteAccount(Integer id) {
         Account existingAccount = accountRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Account not found"));
+                .orElseThrow(() -> new RuntimeException(AppContants.ACCOUNT_NOT_FOUND));
         existingAccount.setDeleteFlag(true);
         accountRepository.save(existingAccount);
     }
@@ -122,11 +123,11 @@ public class AccountServiceImpl implements AccountService {
             if(roleUpdate.isPresent()){
                 oldAccount.setRole(roleUpdate.get());
             }else{
-                throw new ErrorException(ERROR_ROLE_NOT_FOUND, 404);
+                throw new ErrorException(ERROR_ROLE_NOT_FOUND, AppContants.RESOURCE_NOT_FOUND_CODE);
             }
             return accountRepository.save(oldAccount);
         }else {
-            throw new ErrorException("Account not found with id: "  + id,  404);
+            throw new ErrorException(AppContants.ACCOUNT_NOT_FOUND,  AppContants.RESOURCE_NOT_FOUND_CODE);
         }
     }
 }
