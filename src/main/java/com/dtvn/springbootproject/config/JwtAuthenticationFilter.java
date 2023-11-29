@@ -17,6 +17,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+import static com.dtvn.springbootproject.constants.AuthConstants.*;
 import static com.dtvn.springbootproject.constants.ErrorConstants.*;
 import static com.dtvn.springbootproject.constants.HttpConstants.*;
 
@@ -41,19 +42,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter  {
             filterChain.doFilter(request, response);
             return;
         }
-        final String authHeader = request.getHeader("Authorization");
+        final String authHeader = request.getHeader(AUTHORIZATION_HEADER);
         final String jwt;
         final String userEmail;
 
         // * Check if the request has the Authorization header with a Bearer token.
         // ? If not, proceed with the filter chain.
-        if(authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if(authHeader == null || !authHeader.startsWith(BEARER_PREFIX)) {
             filterChain.doFilter(request, response);
             return;
         }
 
         // * Extract the JWT token from the Authorization header.
-        jwt = authHeader.substring(7); //"Bearer " dài 7 kí tự
+        jwt = authHeader.substring(BEARER_PREFIX_LENGTH); //"Bearer " dài 7 kí tự
         userEmail = jwtService.extractUsername(jwt);
 
         // * Check if there is a userEmail in the token and check if the user is authenticated or not
