@@ -13,6 +13,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import static com.dtvn.springbootproject.constants.AppConstants.*;
 import static com.dtvn.springbootproject.constants.HttpConstants.*;
 
 @Service
@@ -45,7 +46,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var refreshToken = jwtService.generateRefreshToken(account);
         return AuthenticationResponseDTO.builder()
                 .code(HTTP_OK)
-                .message("Login successfully")
+                .message(LOGIN_SUCCESS)
                 .access_token(jwtToken)
                 .refresh_token(refreshToken)
                 .build();

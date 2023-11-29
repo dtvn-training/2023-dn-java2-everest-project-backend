@@ -4,15 +4,14 @@ import com.dtvn.springbootproject.dto.responseDtos.Account.AccountResponseDTO;
 import com.dtvn.springbootproject.dto.requestDtos.Account.AccountRegisterRequestDTO;
 import com.dtvn.springbootproject.exceptions.ResponseMessage;
 import com.dtvn.springbootproject.services.AccountService;
-import com.dtvn.springbootproject.services.impl.AccountServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+
+import static com.dtvn.springbootproject.constants.AppConstants.*;
+import static com.dtvn.springbootproject.constants.HttpConstants.*;
 
 @RestController
 @RequestMapping("/api/v1/accounts")
@@ -22,18 +21,16 @@ public class AccountController {
 
     @PostMapping
     public ResponseEntity<ResponseMessage<AccountResponseDTO>> registerAnAccount(
-            @RequestBody @Valid AccountRegisterRequestDTO request, BindingResult bindingResult
+            @RequestBody AccountRegisterRequestDTO request
     ) {
         AccountResponseDTO addedAccount = accountService.registerAnAccount(request);
-        if(addedAccount != null) {
+        if (addedAccount != null) {
             return ResponseEntity.status(HttpStatus.OK)
-                    //TODO: Change message to constant variable
-                    .body(new ResponseMessage("Add an account successfully", 200, addedAccount));
+                    .body(new ResponseMessage(ACCOUNT_REGISTER_SUCCESS, HTTP_OK, addedAccount));
+        } else {
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ResponseMessage(ACCOUNT_REGISTER_FAILED, HTTP_INTERNAL_SERVER_ERROR));
         }
-     else {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(new ResponseMessage("Add an account failed", 500));
-    }
     }
 
 
