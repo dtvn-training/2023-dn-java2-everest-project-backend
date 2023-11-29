@@ -10,6 +10,14 @@ public class ErrorConstants {
     public static final String ERROR_ROLE_REQUIRED = "Role is required";
     public static final String ERROR_PHONE_REQUIRED = "Phone number is required";
 
+    // Length Errors
+    public static final String ERROR_EMAIL_MAX_LENGTH = "Email exceeds maximum allowed length";
+    public static final String ERROR_PASSWORD_MAX_LENGTH = "Password exceeds maximum allowed length";
+    public static final String ERROR_FIRSTNAME_MAX_LENGTH = "Firstname exceeds maximum allowed length";
+    public static final String ERROR_LASTNAME_MAX_LENGTH = "Lastname exceeds maximum allowed length";
+    public static final String ERROR_ADDRESS_MAX_LENGTH = "Address exceeds maximum allowed length";
+    public static final String ERROR_PHONE_MAX_LENGTH = "Phone number exceeds maximum allowed length";
+
     // Invalid Errors
     public static final String ERROR_EMAIL_INVALID = "Email is not valid";
 

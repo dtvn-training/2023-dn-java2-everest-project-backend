@@ -5,6 +5,8 @@ import lombok.Getter;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.dtvn.springbootproject.constants.FieldValueLengthConstants.*;
+
 public class PasswordValidator {
 
     public static PasswordValidationResult validatePassword(String password) {
@@ -13,8 +15,12 @@ public class PasswordValidator {
             result.addError("Password is required");
         }
 
-        if (password.length() < 8) {
+        if (password.length() < MIN_PASSWORD_LENGTH) {
             result.addError("Password should be at least 8 characters long");
+        }
+
+        if (password.length() >= MAX_PASSWORD_LENGTH) {
+            result.addError("Password must only be a maximum of 60 characters long");
         }
 
         if (!password.matches(".*\\d.*")) {
