@@ -1,5 +1,6 @@
 package com.dtvn.springbootproject.services.implementations;
 
+import com.dtvn.springbootproject.dto.responseDtos.Account.AccountDTO;
 import com.dtvn.springbootproject.entities.Role;
 import com.dtvn.springbootproject.exceptions.ErrorException;
 import com.dtvn.springbootproject.repositories.RoleRepository;
@@ -8,7 +9,7 @@ import com.dtvn.springbootproject.dto.responseDtos.Account.AccountResponseDTO;
 import com.dtvn.springbootproject.entities.Account;
 import com.dtvn.springbootproject.repositories.AccountRepository;
 import com.dtvn.springbootproject.services.AccountService;
-import com.dtvn.springbootproject.utils.AppContants;
+import com.dtvn.springbootproject.constants.AppContants;
 import com.dtvn.springbootproject.utils.validators.AccountValidator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -89,15 +90,23 @@ public class AccountServiceImpl implements AccountService {
         throw new IllegalStateException("Authenticated user is not an instance of UserDetails.");
     }
     @Override
-    public Page<AccountResponseDTO> getAccountByEmailOrName(String emailOrName,  Pageable pageable) {
-       if(emailOrName == null || emailOrName.isEmpty()){
-           Page<Account> allAccount = accountRepository.getAllAccount(pageable);
-           return allAccount.map(account -> mapper.map(account, AccountResponseDTO.class));
-       } else if(emailOrName.matches(EMAIL_REGEX)){
-               return accountRepository.findByEmail(emailOrName, pageable);
-       } else{
-            return accountRepository.findByName(emailOrName, pageable);
-       }
+    public Page<AccountDTO> getAccountByEmailOrName(String emailOrName, Pageable pageable) {
+//       if(emailOrName == null || emailOrName.isEmpty()){
+//           Page<Account> allAccount = accountRepository.getAllAccount(pageable);
+//           return allAccount.map(account -> mapper.map(account, AccountDTO.class));
+//       } else if(emailOrName.matches(EMAIL_REGEX)){
+//               return accountRepository.findByEmail(emailOrName, pageable);
+//       } else{
+//            return accountRepository.findByName(emailOrName, pageable);
+//       }
+
+        if(emailOrName == null || emailOrName.isEmpty()){
+            Page<Account> allAccount = accountRepository.getAllAccount(pageable);
+            return allAccount.map(account -> mapper.map(account, AccountDTO.class));
+        } else {
+            Page<Account> listAccount = accountRepository.findAccountByEmailOrName(emailOrName,pageable);
+            return listAccount.map(account -> mapper.map(account,AccountDTO.class));
+        }
     }
 
     @Override
@@ -109,7 +118,7 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(existingAccount);
     }
     @Override
-    public Account updatedAccount(Integer id, AccountResponseDTO updatedAccount) {
+    public AccountDTO updatedAccount(Integer id, AccountDTO updatedAccount) {
         Optional<Account> optionalOldAccount = accountRepository.findById(id);
         if(optionalOldAccount.isPresent()){
             Account oldAccount  =  optionalOldAccount.get();
@@ -125,9 +134,14 @@ public class AccountServiceImpl implements AccountService {
             }else{
                 throw new ErrorException(ERROR_ROLE_NOT_FOUND, AppContants.RESOURCE_NOT_FOUND_CODE);
             }
-            return accountRepository.save(oldAccount);
+            return mapper.map(accountRepository.save(oldAccount),AccountDTO.class);
         }else {
             throw new ErrorException(AppContants.ACCOUNT_NOT_FOUND,  AppContants.RESOURCE_NOT_FOUND_CODE);
         }
+    }
+
+    @Override
+    public boolean isInteger(String number) {
+        return false;
     }
 }

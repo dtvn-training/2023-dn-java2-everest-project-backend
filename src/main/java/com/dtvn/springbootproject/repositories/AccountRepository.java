@@ -1,5 +1,6 @@
 package com.dtvn.springbootproject.repositories;
 
+import com.dtvn.springbootproject.dto.responseDtos.Account.AccountDTO;
 import com.dtvn.springbootproject.dto.responseDtos.Account.AccountResponseDTO;
 import com.dtvn.springbootproject.entities.Account;
 import org.springframework.data.domain.Page;
@@ -15,10 +16,11 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
     Optional<Account> findByEmail(String email);
     boolean existsByEmail(String email);
     @Query("SELECT a FROM Account a WHERE LOWER(a.lastname) LIKE LOWER(concat('%', :lastName, '%'))")
-    Page<AccountResponseDTO> findByName(String lastName, Pageable pageable);
-    Page<AccountResponseDTO> findByEmail(String email, Pageable  pageable);
-
+    Page<AccountDTO> findByName(String lastName, Pageable pageable);
+    Page<AccountDTO> findByEmail(String email, Pageable  pageable);
     @Query("SELECT a FROM Account a WHERE a.deleteFlag = 0")
     Page<Account> getAllAccount(Pageable pageable);
-
+    @Query("SELECT a FROM Account a WHERE LOWER(a.lastname) " +
+            "LIKE LOWER(concat('%', :lastName, '%')) or LOWER(a.email) LIKE LOWER(concat('%', :lastName, '%'))")
+    Page<Account> findAccountByEmailOrName(String lastName,Pageable  pageable);
 }
