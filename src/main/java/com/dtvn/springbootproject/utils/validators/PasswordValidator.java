@@ -9,6 +9,9 @@ public class PasswordValidator {
 
     public static PasswordValidationResult validatePassword(String password) {
         PasswordValidationResult result = new PasswordValidationResult();
+        if (password.isEmpty()) {
+            result.addError("Password is required.");
+        }
 
         if (password.length() < 8) {
             result.addError("Password should be at least 8 characters long.");
@@ -30,10 +33,13 @@ public class PasswordValidator {
             result.addError("Password should contain at least one special character (@#$%^&+=!).");
         }
 
-        if (password.matches("\\s+")) {
+        if (password.matches(".*\\s+.*")) {
             result.addError("Password should not contain whitespace characters.");
         }
 
+        if (password.startsWith(" ") || password.endsWith(" ")) {
+            result.addError("Password should not start or end with whitespace characters.");
+        }
         return result;
     }
 

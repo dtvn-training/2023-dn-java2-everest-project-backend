@@ -17,6 +17,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+import static com.dtvn.springbootproject.constants.ErrorConstants.*;
+import static com.dtvn.springbootproject.constants.HttpConstants.*;
+
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter  {
@@ -75,7 +78,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter  {
                 );
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             } else {
-                throw new ErrorException("Token is invalid or expired", 403);
+                throw new ErrorException(ERROR_TOKEN_INVALID, HTTP_FORBIDDEN);
             }
 
         }

@@ -13,6 +13,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import static com.dtvn.springbootproject.constants.HttpConstants.*;
+
 @Service
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -33,7 +35,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             );
         } catch (AuthenticationException e) {
             return AuthenticationResponseDTO.builder()
-                    .code(403)
+                    .code(HTTP_FORBIDDEN)
                     .message(e.getMessage())
                     .build();
         }
@@ -42,7 +44,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var jwtToken = jwtService.generateToken(account);
         var refreshToken = jwtService.generateRefreshToken(account);
         return AuthenticationResponseDTO.builder()
-                .code(200)
+                .code(HTTP_OK)
                 .message("Login successfully")
                 .access_token(jwtToken)
                 .refresh_token(refreshToken)
