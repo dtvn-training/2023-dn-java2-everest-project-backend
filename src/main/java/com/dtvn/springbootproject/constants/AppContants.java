@@ -9,7 +9,9 @@ public class AppContants {
     public static final Integer ACCOUNT_SUCCESS_CODE = 200;
     public static final String ACCOUNT_ID_INVALID = "Account id invalid";
     public static final Integer ACCOUNT_BAD_REQUEST = 400;
-    public static final String  PAGENO_PAGESIZE_INVALID= "Page no or page size invalid";
+    public static final String  PAGENO_INVALID= "Page no invalid";
+    public static final String  PAGESIZE_INVALID= "Page size invalid";
     public static final String ACCOUNT_UPDATE_SUCCESS = "Account update success";
+    public static final String ACCOUNT_GET_ALL_SUCCESS = "Get all account success";
 
 }

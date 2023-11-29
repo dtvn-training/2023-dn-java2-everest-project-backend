@@ -142,6 +142,11 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public boolean isInteger(String number) {
-        return false;
+        try {
+            Integer.parseInt(number);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 }

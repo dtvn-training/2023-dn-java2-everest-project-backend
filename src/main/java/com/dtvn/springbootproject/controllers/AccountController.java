@@ -30,11 +30,23 @@ public class AccountController {
     }
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping
-    public Page<AccountDTO> getAccounts(@RequestParam(value = "emailOrName", required = false) String emailOrName,
-                                               @RequestParam(value = "pageNo", defaultValue = AppContants.DEFAULT_PAGE_NUMBER,required = false) int pageNo,
-                                               @RequestParam(value = "pageSize", defaultValue = AppContants.DEFAULT_PAGE_SIZE, required = false) int pageSize) {
+    public ResponseEntity<ResponseMessage<Page<AccountDTO> >> getAccounts(@RequestParam(value = "emailOrName", required = false) String emailOrName,
+                                               @RequestParam(value = "pageNo", defaultValue = AppContants.DEFAULT_PAGE_NUMBER,required = false) String strPageNo,
+                                               @RequestParam(value = "pageSize", defaultValue = AppContants.DEFAULT_PAGE_SIZE, required = false) String strPageSize) {
+
+        if(!accountService.isInteger(strPageNo))
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ResponseMessage<>(AppContants.PAGENO_INVALID, AppContants.ACCOUNT_BAD_REQUEST));
+        else if(!accountService.isInteger(strPageSize)){
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ResponseMessage<>(AppContants.PAGESIZE_INVALID, AppContants.ACCOUNT_BAD_REQUEST));
+        }
+        int pageNo = Integer.parseInt(strPageNo);
+        int pageSize = Integer.parseInt(strPageSize);
         Pageable pageable = PageRequest.of(pageNo, pageSize);
-        return accountService.getAccountByEmailOrName(emailOrName, pageable);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseMessage<Page<AccountDTO>>(AppContants.ACCOUNT_GET_ALL_SUCCESS, AppContants.ACCOUNT_SUCCESS_CODE,
+                        accountService.getAccountByEmailOrName(emailOrName, pageable)));
     }
     @PatchMapping()
     public ResponseEntity<ResponseMessage<AccountDTO>> deleteAccount(@RequestParam(value = "id", required = true) String AccountId) {
