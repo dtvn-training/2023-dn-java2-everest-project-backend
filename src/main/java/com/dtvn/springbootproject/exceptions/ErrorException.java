@@ -7,14 +7,15 @@ import java.util.List;
 @Getter
 public class ErrorException extends RuntimeException{
     private final int errorCode;
-    private List<String> errors;
+    private final String errors;
     public ErrorException(String message,int errorCode) {
         super(message);
         this.errorCode = errorCode;
+        this.errors = message;
     }
-    public ErrorException(String message,int errorCode,List<String> errors) {
+    public ErrorException(String message,int errorCode,String errors) {
         super(message);
         this.errorCode = errorCode;
-        this.errors = List.of(message);
+        this.errors = errors;
     }
 }

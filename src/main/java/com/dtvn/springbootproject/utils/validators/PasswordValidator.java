@@ -10,35 +10,35 @@ public class PasswordValidator {
     public static PasswordValidationResult validatePassword(String password) {
         PasswordValidationResult result = new PasswordValidationResult();
         if (password.isEmpty()) {
-            result.addError("Password is required.");
+            result.addError("Password is required");
         }
 
         if (password.length() < 8) {
-            result.addError("Password should be at least 8 characters long.");
+            result.addError("Password should be at least 8 characters long");
         }
 
         if (!password.matches(".*\\d.*")) {
-            result.addError("Password should contain at least one digit.");
+            result.addError("Password should contain at least one digit");
         }
 
         if (!password.matches(".*[a-z].*")) {
-            result.addError("Password should contain at least one lowercase letter.");
+            result.addError("Password should contain at least one lowercase letter");
         }
 
         if (!password.matches(".*[A-Z].*")) {
-            result.addError("Password should contain at least one uppercase letter.");
+            result.addError("Password should contain at least one uppercase letter");
         }
 
         if (!password.matches(".*[@#$%^&+=!].*")) {
-            result.addError("Password should contain at least one special character (@#$%^&+=!).");
+            result.addError("Password should contain at least one special character (@#$%^&+=!)");
         }
 
         if (password.matches(".*\\s+.*")) {
-            result.addError("Password should not contain whitespace characters.");
+            result.addError("Password should not contain whitespace characters");
         }
 
         if (password.startsWith(" ") || password.endsWith(" ")) {
-            result.addError("Password should not start or end with whitespace characters.");
+            result.addError("Password should not start or end with whitespace characters");
         }
         return result;
     }

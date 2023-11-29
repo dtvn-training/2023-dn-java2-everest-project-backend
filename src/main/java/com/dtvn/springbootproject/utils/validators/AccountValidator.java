@@ -38,22 +38,23 @@ public class AccountValidator {
         }
     }
 
-    private void validatePassword(String password) {
-        if (password == null){
-            throw new ErrorException(ERROR_PASSWORD_REQUIRED, HTTP_BAD_REQUEST);
-        }
-        PasswordValidator.PasswordValidationResult validationResult = PasswordValidator.validatePassword(password);
+        private void validatePassword(String password) {
+            if (password == null){
+                throw new ErrorException(ERROR_PASSWORD_REQUIRED, HTTP_BAD_REQUEST);
+            }
+            PasswordValidator.PasswordValidationResult validationResult = PasswordValidator.validatePassword(password);
 
-//        if (!validationResult.isValid()) {
-//            validationResult.getErrors().forEach(error -> {
-//                throw new ErrorException(error, HTTP_BAD_REQUEST);
-//            });
-//        }
-        if (!validationResult.isValid()) {
-            List<String> errors = validationResult.getErrors();
-            throw new ErrorException(ERROR_PASSWORD_INVALID, HTTP_BAD_REQUEST,errors);
+    //        if (!validationResult.isValid()) {
+    //            validationResult.getErrors().forEach(error -> {
+    //                throw new ErrorException(error, HTTP_BAD_REQUEST);
+    //            });
+    //        }
+            if (!validationResult.isValid()) {
+                List<String> errors = validationResult.getErrors();
+                String formattedErrors = String.join(", ", errors);
+                throw new ErrorException(ERROR_PASSWORD_INVALID, HTTP_BAD_REQUEST,formattedErrors);
+            }
         }
-    }
 
     private void validateName(String name, String fieldName) {
         if (name == null && fieldName.contains("Firstname")){

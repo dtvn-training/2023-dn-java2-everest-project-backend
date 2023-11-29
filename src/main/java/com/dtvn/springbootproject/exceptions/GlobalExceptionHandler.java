@@ -24,7 +24,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         Map<String, Object> response = new HashMap<>();
         response.put("code", e.getErrorCode());
         response.put("message", e.getMessage());
-       // response.put("data", "aaa");// data generic
+        response.put("error", e.getErrors());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }
