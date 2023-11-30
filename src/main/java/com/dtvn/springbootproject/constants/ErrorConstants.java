@@ -36,4 +36,6 @@ public class ErrorConstants {
     public static final String ERROR_TOKEN_INVALID = "Token is invalid or expired";
     public static final String ERROR_CANNOT_RETRIEVE_AUTHENTICATED_USER = "Cannot retrieve authenticated user.";
     public static final String USER_NOT_USER_DETAILS = "Authenticated user is not an instance of UserDetails.";
+    public static final String ERROR_LOGIN_BAD_CREDENTIALS = "Email or password is incorrect.";
+    public static final String ERROR_INTERNAL_SERVER = "Internal server error.";
 }
