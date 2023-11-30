@@ -1,6 +1,5 @@
-package com.dtvn.springbootproject.services.implementations;
+package com.dtvn.springbootproject.services.impl;
 
-//import com.dtvn.springbootproject.exceptions.AuthenticationException;
 import com.dtvn.springbootproject.dto.requestDtos.Auth.AuthenticationRequestDTO;
 import com.dtvn.springbootproject.dto.responseDtos.Auth.AuthenticationResponseDTO;
 import com.dtvn.springbootproject.repositories.AccountRepository;
@@ -8,10 +7,15 @@ import com.dtvn.springbootproject.config.JwtService;
 import com.dtvn.springbootproject.services.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import static com.dtvn.springbootproject.constants.AppConstants.*;
+import static com.dtvn.springbootproject.constants.ErrorConstants.*;
+import static com.dtvn.springbootproject.constants.HttpConstants.*;
 
 @Service
 @RequiredArgsConstructor
@@ -31,10 +35,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                             request.getPassword()
                     )
             );
-        } catch (AuthenticationException e) {
+        } catch (AuthenticationServiceException e) {
             return AuthenticationResponseDTO.builder()
-                    .code(403)
-                    .message(e.getMessage())
+                    .code(HTTP_INTERNAL_SERVER_ERROR)
+                    .message(ERROR_INTERNAL_SERVER)
+                    .build();
+        } catch (BadCredentialsException e) {
+            return AuthenticationResponseDTO.builder()
+                    .code(HTTP_BAD_REQUEST)
+                    .message(ERROR_LOGIN_BAD_CREDENTIALS)
                     .build();
         }
         var account = accountRepository.findByEmail(request.getEmail())
@@ -42,8 +51,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var jwtToken = jwtService.generateToken(account);
         var refreshToken = jwtService.generateRefreshToken(account);
         return AuthenticationResponseDTO.builder()
-                .code(200)
-                .message("Login successfully")
+                .code(HTTP_OK)
+                .message(LOGIN_SUCCESS)
                 .access_token(jwtToken)
                 .refresh_token(refreshToken)
                 .build();

@@ -1,5 +1,5 @@
-package com.dtvn.springbootproject.services.implementations;
-
+package com.dtvn.springbootproject.services.impl;
+import com.dtvn.springbootproject.constants.HttpConstants;
 import com.dtvn.springbootproject.dto.responseDtos.Account.AccountDTO;
 import com.dtvn.springbootproject.entities.Role;
 import com.dtvn.springbootproject.exceptions.ErrorException;
@@ -21,10 +21,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.util.Optional;
-
 import static com.dtvn.springbootproject.constants.ErrorConstants.*;
+import static com.dtvn.springbootproject.constants.HttpConstants.*;
 import static com.dtvn.springbootproject.utils.RegularExpression.EMAIL_REGEX;
 
 @Service
@@ -37,15 +36,14 @@ public class AccountServiceImpl implements AccountService {
     private final ModelMapper mapper = new ModelMapper();
     @Override
     public AccountResponseDTO registerAnAccount(AccountRegisterRequestDTO request) {
-
         accountValidator.validateRegisterRequest(request);
-
         //validate role
+        if (request.getRole() == null) {
+            throw new ErrorException(ERROR_ROLE_REQUIRED,HTTP_BAD_REQUEST);
+        }
         Role role = roleRepository.findByRoleName(request.getRole())
-                .orElseThrow(() -> new ErrorException(ERROR_ROLE_NOT_FOUND, 404));
-
+                .orElseThrow(() -> new ErrorException(ERROR_ROLE_NOT_FOUND, HTTP_NOT_FOUND));
         Account createdBy = getAuthenticatedAccount();
-
         var account = Account.builder()
                 .firstname(request.getFirstname())
                 .lastname(request.getLastname())
@@ -60,7 +58,7 @@ public class AccountServiceImpl implements AccountService {
             accountRepository.save(account);
         }
         catch (Exception e) {
-            throw new IllegalStateException("Failed to save the account.", e);
+            throw new ErrorException(ERROR_SAVE_ACCOUNT, HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return AccountResponseDTO.builder()
@@ -79,15 +77,14 @@ public class AccountServiceImpl implements AccountService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()) {
-            throw new IllegalStateException("Cannot retrieve authenticated user.");
+            throw new ErrorException(ERROR_CANNOT_RETRIEVE_AUTHENTICATED_USER,HTTP_INTERNAL_SERVER_ERROR);
         }
 
         Object principal = authentication.getPrincipal();
         if (principal instanceof UserDetails) {
             return (Account) principal;
         }
-
-        throw new IllegalStateException("Authenticated user is not an instance of UserDetails.");
+        throw new ErrorException(USER_NOT_USER_DETAILS,HTTP_FORBIDDEN);
     }
     @Override
     public Page<AccountDTO> getAccountByEmailOrName(String emailOrName, Pageable pageable) {

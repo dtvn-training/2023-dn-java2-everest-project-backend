@@ -15,5 +15,4 @@ public interface AccountService {
     void deleteAccount(Integer id);
     public AccountDTO updatedAccount(Integer id, AccountDTO account);
     boolean isInteger(String number);
-
 }
