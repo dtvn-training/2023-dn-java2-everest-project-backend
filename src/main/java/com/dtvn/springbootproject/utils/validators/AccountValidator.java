@@ -34,9 +34,6 @@ public class AccountValidator {
         if (email.length() >= MAX_EMAIL_LENGTH){
             throw new ErrorException(ERROR_EMAIL_MAX_LENGTH, HTTP_BAD_REQUEST);
         }
-        if (accountRepository.existsByEmail(email)) {
-            throw new ErrorException(ERROR_EMAIL_ALREADY_EXISTS,HTTP_BAD_REQUEST);
-        }
         if (!email.matches(EMAIL_REGEX)) {
             throw new ErrorException(ERROR_EMAIL_INVALID, HTTP_BAD_REQUEST);
         }

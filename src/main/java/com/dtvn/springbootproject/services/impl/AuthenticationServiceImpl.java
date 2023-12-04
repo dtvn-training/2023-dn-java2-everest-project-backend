@@ -2,6 +2,7 @@ package com.dtvn.springbootproject.services.impl;
 
 import com.dtvn.springbootproject.dto.requestDtos.Auth.AuthenticationRequestDTO;
 import com.dtvn.springbootproject.dto.responseDtos.Auth.AuthenticationResponseDTO;
+import com.dtvn.springbootproject.exceptions.ErrorException;
 import com.dtvn.springbootproject.repositories.AccountRepository;
 import com.dtvn.springbootproject.config.JwtService;
 import com.dtvn.springbootproject.services.AuthenticationService;
@@ -48,6 +49,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
         var account = accountRepository.findByEmail(request.getEmail())
                 .orElseThrow();
+        if(account.isDeleteFlag()) {
+            return AuthenticationResponseDTO.builder()
+                    .code(HTTP_BAD_REQUEST)
+                    .message(ERROR_ACCOUNT_HAS_BEEN_DELETED)
+                    .build();
+        }
         var jwtToken = jwtService.generateToken(account);
         var refreshToken = jwtService.generateRefreshToken(account);
         return AuthenticationResponseDTO.builder()
@@ -55,6 +62,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .message(LOGIN_SUCCESS)
                 .access_token(jwtToken)
                 .refresh_token(refreshToken)
+                .username(account.getFirstname() + " " + account.getLastname())
                 .build();
     }
 

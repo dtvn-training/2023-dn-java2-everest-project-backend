@@ -14,4 +14,5 @@ public class AuthenticationResponseDTO {
     private String refresh_token;
     private int code;
     private String message;
+    private String username;
 }

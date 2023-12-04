@@ -20,12 +20,12 @@ public class SecurityConfiguration {
     private static final String[] WHITE_LIST_URL =
             {
                     "/api/v1/auth/**",
+                    "/api/v1/**"
             };
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors().disable()
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
@@ -39,7 +39,8 @@ public class SecurityConfiguration {
                 .and()
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-        
+        http
+                .cors().disable();
         return http.build();
     }
 
