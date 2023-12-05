@@ -1,5 +1,4 @@
 package com.dtvn.springbootproject.services.impl;
-import com.dtvn.springbootproject.constants.HttpConstants;
 import com.dtvn.springbootproject.dto.responseDtos.Account.AccountDTO;
 import com.dtvn.springbootproject.entities.Role;
 import com.dtvn.springbootproject.exceptions.ErrorException;
@@ -24,7 +23,6 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 import static com.dtvn.springbootproject.constants.ErrorConstants.*;
 import static com.dtvn.springbootproject.constants.HttpConstants.*;
-import static com.dtvn.springbootproject.utils.RegularExpression.EMAIL_REGEX;
 
 @Service
 @RequiredArgsConstructor
@@ -129,11 +127,11 @@ public class AccountServiceImpl implements AccountService {
             if(roleUpdate.isPresent()){
                 oldAccount.setRole(roleUpdate.get());
             }else{
-                throw new ErrorException(ERROR_ROLE_NOT_FOUND, AppConstants.RESOURCE_NOT_FOUND_CODE);
+                throw new ErrorException(ERROR_ROLE_NOT_FOUND, HTTP_NOT_FOUND);
             }
             return mapper.map(accountRepository.save(oldAccount),AccountDTO.class);
         }else {
-            throw new ErrorException(AppConstants.ACCOUNT_NOT_FOUND,  AppConstants.RESOURCE_NOT_FOUND_CODE);
+            throw new ErrorException(AppConstants.ACCOUNT_NOT_FOUND, HTTP_NOT_FOUND);
         }
     }
 
