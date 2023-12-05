@@ -15,4 +15,5 @@ public class AuthenticationResponseDTO {
     private int code;
     private String message;
     private String username;
+    private long access_token_expires_in;
 }

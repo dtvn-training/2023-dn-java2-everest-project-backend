@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -30,6 +31,7 @@ import static com.dtvn.springbootproject.constants.AppConstants.*;
 import static com.dtvn.springbootproject.constants.ErrorConstants.ERROR_EMAIL_ALREADY_EXISTS;
 import static com.dtvn.springbootproject.constants.HttpConstants.*;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/v1/accounts")
 @RequiredArgsConstructor
@@ -41,7 +43,6 @@ public class AccountController {
     private final JwtService jwtService;
     private final RoleRepository roleRepository;
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping
     public ResponseEntity<ResponseMessage<AccountResponseDTO>> registerAnAccount(
             @RequestBody AccountRegisterRequestDTO request
@@ -59,7 +60,8 @@ public class AccountController {
                     .body(new ResponseMessage(ACCOUNT_REGISTER_FAILED, HTTP_INTERNAL_SERVER_ERROR));
         }
     }
-    @CrossOrigin(origins = "http://localhost:3000")
+
+
     @GetMapping
     public ResponseEntity<ResponseMessage<Page<AccountDTO> >> getAccounts(@RequestParam(value = "emailOrName", required = false) String emailOrName,
                                                @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,required = false) String strPageNo,
@@ -79,7 +81,7 @@ public class AccountController {
                 .body(new ResponseMessage<Page<AccountDTO>>(AppConstants.ACCOUNT_GET_ALL_SUCCESS, AppConstants.ACCOUNT_SUCCESS_CODE,
                         accountService.getAccountByEmailOrName(emailOrName, pageable)));
     }
-    @CrossOrigin(origins = "http://localhost:3000")
+
     @PatchMapping()
     public ResponseEntity<ResponseMessage<AccountDTO>> deleteAccount(
             @RequestParam(value = "id", required = true) String AccountId,
@@ -118,14 +120,10 @@ public class AccountController {
                     .body(new ResponseMessage<>(AppConstants.ACCOUNT_NOT_FOUND, AppConstants.RESOURCE_NOT_FOUND_CODE));
         }
     }
-    @CrossOrigin(origins = "http://localhost:3000")
+
     @PutMapping
         public ResponseEntity<ResponseMessage<AccountDTO>> updateAccount(@RequestParam(value = "id", required = true) Integer accountId,
                                                  @RequestBody AccountDTO updatedAccount){
-        if(accountRepository.existsByEmail(updatedAccount.getEmail())){
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ResponseMessage(ERROR_EMAIL_ALREADY_EXISTS, HTTP_BAD_REQUEST));
-        }
         AccountDTO accountUpdated = accountService.updatedAccount(accountId, updatedAccount);
         if (accountUpdated != null) {
             return ResponseEntity.status(HttpStatus.OK)

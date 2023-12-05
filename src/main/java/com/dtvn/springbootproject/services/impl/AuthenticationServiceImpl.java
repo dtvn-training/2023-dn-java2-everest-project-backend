@@ -2,7 +2,6 @@ package com.dtvn.springbootproject.services.impl;
 
 import com.dtvn.springbootproject.dto.requestDtos.Auth.AuthenticationRequestDTO;
 import com.dtvn.springbootproject.dto.responseDtos.Auth.AuthenticationResponseDTO;
-import com.dtvn.springbootproject.exceptions.ErrorException;
 import com.dtvn.springbootproject.repositories.AccountRepository;
 import com.dtvn.springbootproject.config.JwtService;
 import com.dtvn.springbootproject.services.AuthenticationService;
@@ -13,6 +12,8 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
 
 import static com.dtvn.springbootproject.constants.AppConstants.*;
 import static com.dtvn.springbootproject.constants.ErrorConstants.*;
@@ -57,12 +58,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
         var jwtToken = jwtService.generateToken(account);
         var refreshToken = jwtService.generateRefreshToken(account);
+
+        Date expirationDate = jwtService.getExpirationDate(jwtToken);
+        long expiresIn = expirationDate.getTime();
+
         return AuthenticationResponseDTO.builder()
                 .code(HTTP_OK)
                 .message(LOGIN_SUCCESS)
                 .access_token(jwtToken)
                 .refresh_token(refreshToken)
                 .username(account.getFirstname() + " " + account.getLastname())
+                .access_token_expires_in(expiresIn)
                 .build();
     }
 
