@@ -11,12 +11,12 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 public class CampaignDTO {
     private String name;
-    private Timestamp startDate;
-    private Timestamp endDate;
-    private Long budget;
-    private Integer usedAmount;
-    private Float usageRate;
-    private Boolean status;
+//    private Timestamp startDate;
+//    private Timestamp endDate;
+//    private Long budget;
+//    private Integer usedAmount;
+//    private Float usageRate;
+//    private Boolean status;
 }
 
 

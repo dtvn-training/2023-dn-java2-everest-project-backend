@@ -18,4 +18,5 @@ public class AppConstants {
     public static final String ACCOUNT_DELETE_FAILD = "Account cannot be deleted";
     public static final String ROLES_GET_ALL_SUCCESS = "Get all role success";
     public static final String ROLES_GET_ALL_FAILED = "Get all role failed";
+    public static final String CAMPAIGN_GET_SUCCESS = "Get campagins success";
 }

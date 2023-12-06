@@ -86,14 +86,6 @@ public class AccountServiceImpl implements AccountService {
     }
     @Override
     public Page<AccountDTO> getAccountByEmailOrName(String emailOrName, Pageable pageable) {
-//       if(emailOrName == null || emailOrName.isEmpty()){
-//           Page<Account> allAccount = accountRepository.getAllAccount(pageable);
-//           return allAccount.map(account -> mapper.map(account, AccountDTO.class));
-//       } else if(emailOrName.matches(EMAIL_REGEX)){
-//               return accountRepository.findByEmail(emailOrName, pageable);
-//       } else{
-//            return accountRepository.findByName(emailOrName, pageable);
-//       }
 
         if(emailOrName == null || emailOrName.isEmpty()){
             Page<Account> allAccount = accountRepository.getAllAccount(pageable);
@@ -103,7 +95,6 @@ public class AccountServiceImpl implements AccountService {
             return listAccount.map(account -> mapper.map(account,AccountDTO.class));
         }
     }
-
     @Override
     @Transactional
     public void deleteAccount(Integer id) {
