@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 import static com.dtvn.springbootproject.constants.HttpConstants.HTTP_BAD_REQUEST;
+import static com.dtvn.springbootproject.constants.HttpConstants.HTTP_OK;
 
 @RestController
 @RequestMapping("/api/v1/campaigns")
@@ -26,7 +27,7 @@ public class CampaignController {
     private final CampaignService  campaignService;
     private final CampaignRepository campaignRepository;
     @GetMapping("/getCampaign")
-    public ResponseEntity<ResponseMessage<Page<CampaignDTO> >> getCampaign(
+    public ResponseEntity<ResponseMessage<Page<CampaignDTO>>> getCampaign(
             @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,required = false) String strPageNo,
             @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) String strPageSize){
@@ -50,7 +51,6 @@ public class CampaignController {
         try{
             Integer campaignId = Integer.parseInt(strCampaginId);
             Optional<Campaign> campaign = campaignRepository.findById(campaignId);
-            //check campagin is exist
             if(campaign.isPresent()){
                 if(campaign.get().isDeleteFlag() == true){
                     return ResponseEntity.status(HttpStatus.OK)
@@ -71,8 +71,26 @@ public class CampaignController {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ResponseMessage<>(AppConstants.ACCOUNT_DELETE_FAILD, HTTP_BAD_REQUEST));
         }
+    }
 
-
+    @PutMapping("/updateCampagin")
+    public ResponseEntity<ResponseMessage<ResponseEntity>> updateCampaign(
+            @PathVariable String strCampaignId,
+            @RequestBody CampaignDTO newCamapaign){
+        if(campaignService.isInteger(strCampaignId)){
+            Integer campaignId = Integer.parseInt(strCampaignId);
+            if(campaignRepository.existsByName(newCamapaign.getName())){
+                return ResponseEntity.status(HttpStatus.OK)
+                        .body(new ResponseMessage<>(AppConstants.CAMPAGIN_ALREADY_EXISTS, HTTP_BAD_REQUEST));
+            } else{
+                campaignService.updateCampagin(campaignId, newCamapaign);
+                return ResponseEntity.status(HttpStatus.OK)
+                        .body(new ResponseMessage<>(AppConstants.CAMPAGIN_UPDATE_SUCCESS, HTTP_OK));
+            }
+        } else{
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ResponseMessage<>(AppConstants.CAMPAGIN_ID_INVALID, HTTP_BAD_REQUEST));
+        }
     }
 
 }

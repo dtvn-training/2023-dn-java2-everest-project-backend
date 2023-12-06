@@ -25,4 +25,6 @@ public class AppConstants {
     public static final String CAMPAGIN_DELETE_SUCCESS= "Campaign deleted success";
     public static final String CAMPAGIN_ID_INVALID= "Campaign id invalid";
     public static final String CAMPAGIN_IS_DELETED = "Campagin has been deleted";
+    public static final String CAMPAGIN_ALREADY_EXISTS = "Campaign already exists";
+    public static final String CAMPAGIN_UPDATE_SUCCESS = "Campaign update success";
 }
