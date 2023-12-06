@@ -19,4 +19,10 @@ public class AppConstants {
     public static final String ROLES_GET_ALL_SUCCESS = "Get all role success";
     public static final String ROLES_GET_ALL_FAILED = "Get all role failed";
     public static final String CAMPAIGN_GET_SUCCESS = "Get campagins success";
+    public static final String CREATE_CAMPAIGN_FAILED = "Create campagin failed";
+    public static final String CREATE_CAMPAIGN_SUCCESS = "Create campaign success";
+    public static final String CAMPAGIN_NOT_FOUND = "Campaign not found";
+    public static final String CAMPAGIN_DELETE_SUCCESS= "Campaign deleted success";
+    public static final String CAMPAGIN_ID_INVALID= "Campaign id invalid";
+    public static final String CAMPAGIN_IS_DELETED = "Campagin has been deleted";
 }
