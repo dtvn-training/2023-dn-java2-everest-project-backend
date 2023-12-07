@@ -1,11 +1,14 @@
 package com.dtvn.springbootproject.services.impl;
 import com.dtvn.springbootproject.constants.AppConstants;
-import com.dtvn.springbootproject.constants.HttpConstants;
+import com.dtvn.springbootproject.dto.responseDtos.Campaign.CampaignAndCreativesDTO;
 import com.dtvn.springbootproject.dto.responseDtos.Campaign.CampaignDTO;
+import com.dtvn.springbootproject.dto.responseDtos.Creative.CreativeDTO;
 import com.dtvn.springbootproject.entities.Account;
 import com.dtvn.springbootproject.entities.Campaign;
-import com.dtvn.springbootproject.exceptions.ResponseMessage;
+import com.dtvn.springbootproject.entities.Creatives;
+import com.dtvn.springbootproject.repositories.AccountRepository;
 import com.dtvn.springbootproject.repositories.CampaignRepository;
+import com.dtvn.springbootproject.repositories.CreativeRepository;
 import com.dtvn.springbootproject.services.CampaignService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -21,6 +24,8 @@ import java.util.Optional;
 public class CampaignServiceImpl implements CampaignService {
     @Autowired
     private CampaignRepository campaignRepository;
+    @Autowired
+    private CreativeRepository creativeRepository;
 
     private final ModelMapper mapper = new ModelMapper();
 
@@ -48,8 +53,21 @@ public class CampaignServiceImpl implements CampaignService {
     }
 
     @Override
-    public CampaignDTO createCampaign(CampaignDTO campaignDTO) {
-        return null;
+    public CampaignAndCreativesDTO createCampaign(CampaignAndCreativesDTO campaignAndCreativesDTO, Account account) {
+        CampaignDTO campaignDTO = campaignAndCreativesDTO.getCampaignDTO();
+        CreativeDTO creativeDTO = campaignAndCreativesDTO.getCreativesDTO();
+        Campaign campaignCreated =  new Campaign();
+        campaignCreated = mapper.map(campaignDTO, Campaign.class);
+        campaignCreated.setAccountId(account);
+        campaignRepository.save(campaignCreated);
+        Creatives creatives = new Creatives();
+        creatives = mapper.map(creativeDTO, Creatives.class);
+        System.out.println(campaignCreated);
+        campaignRepository.save(campaignCreated);
+        creatives.setCampaignId(campaignCreated);
+        creatives.setDeleteFlag(false);
+        Creatives creativesCreated = creativeRepository.save(creatives);
+        return campaignAndCreativesDTO;
     }
 
     @Override
@@ -60,6 +78,11 @@ public class CampaignServiceImpl implements CampaignService {
         } catch (NumberFormatException e) {
             return false;
         }
+    }
+
+    @Override
+    public Campaign maptoEntity(CampaignDTO campaignDTO) {
+        return null;
     }
 
 

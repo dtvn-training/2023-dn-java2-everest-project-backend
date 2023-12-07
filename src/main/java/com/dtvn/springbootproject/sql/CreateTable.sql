@@ -39,7 +39,7 @@ VALUES(1,'quyet@mail.com','$2a$10$.SKirmzGptq/yvOJVPGbv.j2NhQJAOQaQHioJ6cA/kVd2r
 
 
 CREATE TABLE IF NOT EXISTS  campaigns (
-            campaign_id SERIAL PRIMARY KEY,
+            campaign_id INT AUTO_INCREMENT PRIMARY KEY,
             campaign_name VARCHAR(255),
             startdate TIMESTAMP,
             endDate TIMESTAMP,
@@ -49,12 +49,11 @@ CREATE TABLE IF NOT EXISTS  campaigns (
             create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             update_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             status BOOLEAN,
-            delete_flag BOOLEAN NOT NULL,
+            delete_flag BOOLEAN DEFAULT FALSE,
             usage_rate FLOAT,
             used_amount INTEGER,
             FOREIGN KEY (account_id) REFERENCES accounts(account_id)
 );
-
 
 CREATE TABLE IF NOT EXISTS  creatives (
             creative_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -65,7 +64,7 @@ CREATE TABLE IF NOT EXISTS  creatives (
             campaign_id INT,
             create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             update_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            delete_flag BOOLEAN,
+            delete_flag BOOLEAN DEFAULT FALSE,
             FOREIGN KEY (campaign_id) REFERENCES campaigns(campaign_id)
 );
 
@@ -73,10 +72,7 @@ CREATE TABLE IF NOT EXISTS  creatives (
 
 INSERT INTO campaigns (campaign_name, startdate, endDate, budget, bid_amount, account_id, status, delete_flag, usage_rate, used_amount)
 VALUES
-    ('Campaign A', '2023-01-01', '2023-02-01', 100000, 50000, 1, true, false, 0.75, 20),
-    ('Campaign B', '2023-02-15', '2023-03-15', 150000, 75000, 2, true, false, 0.60, 15),
-    ('Campaign C', '2023-03-20', '2023-04-20', 120000, 60000, 3, false, false, 0.80, 25),
-    ('Campaign D', '2023-04-10', '2023-05-10', 180000, 90000, 1, true, false, 0.65, 18),
-    ('Campaign E', '2023-05-05', '2023-06-05', 200000, 100000, 2, false, false, 0.70, 22),
-    ('Campaign F', '2023-06-12', '2023-07-12', 160000, 80000, 3, true, false, 0.55, 16);
+('Campaign 1', '2023-01-01', '2023-02-01', 1000000, 500000, 1, true, false, 0.75, 20),
+('Campaign 2', '2023-02-01', '2023-03-01', 1500000, 700000, 2, false, false, 0.60, 15),
+('Campaign 3', '2023-03-01', '2023-04-01', 800000, 400000, 1, true, false, 0.90, 25);
 
