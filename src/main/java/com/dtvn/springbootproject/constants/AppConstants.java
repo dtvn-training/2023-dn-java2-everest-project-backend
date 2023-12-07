@@ -4,7 +4,6 @@ public class AppConstants {
     public static final String LOGIN_SUCCESS = "Login successfully";
     public static final String ACCOUNT_REGISTER_SUCCESS = "Account registered successfully";
     public static final String ACCOUNT_REGISTER_FAILED = "Account register failed";
-
     public static final String DEFAULT_PAGE_NUMBER = "0";
     public static final String DEFAULT_PAGE_SIZE = "3";
     public static final String ACCOUNT_NOT_FOUND = "Account not found";

@@ -43,7 +43,7 @@ public class CampaignServiceImpl implements CampaignService {
     }
     @Override
     public void deleteCampaign(int campaignId) {
-        Campaign campaign = campaignRepository.findById(campaignId)
+        Campaign campaign = campaignRepository.findByIdAndDeleteFlagIsFalse(campaignId)
                 .orElseThrow(() -> new RuntimeException(AppConstants.CAMPAIGN_NOT_FOUND));
         campaign.setDeleteFlag(true);
         campaignRepository.save(campaign);
@@ -54,7 +54,7 @@ public class CampaignServiceImpl implements CampaignService {
         CampaignDTO campaignDTO = campaignAndCreativesDTO.getCampaignDTO();
         CreativeDTO creativeDTO = campaignAndCreativesDTO.getCreativesDTO();
         try{
-            Optional<Campaign> oldCampaign = campaignRepository.findById(campaginId);
+            Optional<Campaign> oldCampaign = campaignRepository.findByIdAndDeleteFlagIsFalse(campaginId);
             Optional<Creatives> oldCreate = creativeRepository.findByCampaignIdAndDeleteFlagIsFalse(oldCampaign)  ;
         if(oldCampaign.isPresent()){
             //update campaign

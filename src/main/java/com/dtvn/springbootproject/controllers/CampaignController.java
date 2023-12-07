@@ -63,7 +63,7 @@ public class CampaignController {
         try{
 
             Integer campaignId = Integer.parseInt(strCampaginId);
-            Optional<Campaign> campaign = campaignRepository.findById(campaignId);
+            Optional<Campaign> campaign = campaignRepository.findByIdAndDeleteFlagIsFalse(campaignId);
             if(campaign.isPresent()){
                 if(campaign.get().isDeleteFlag() == true){
                     return ResponseEntity.status(HttpStatus.OK)
@@ -95,7 +95,7 @@ public class CampaignController {
             Integer campaignId = Integer.parseInt(strCampaignId);
             CreativeDTO creatives = campaignAndCreativesDTO.getCreativesDTO();
             String creativesName = creatives.getTitle();
-            Optional<Campaign> oldCampaign = campaignRepository.findById(campaignId);
+            Optional<Campaign> oldCampaign = campaignRepository.findByIdAndDeleteFlagIsFalse(campaignId);
 
             //check campagin is present
             if(oldCampaign.isPresent()){
@@ -106,7 +106,6 @@ public class CampaignController {
                         //check if creatives is present: true
                         if(creatives.getTitle().equals(oldCreate.get().getTitle())
                                 || !creativeRepository.existsByTitleAndDeleteFlagIsFalse(creativesName)){
-
                             CampaignDTO campaignDTO = campaignAndCreativesDTO.getCampaignDTO();
                             if (campaignDTO.getEndDate().toInstant().isAfter(campaignDTO.getStartDate().toInstant())) {
                                 // endDateTime after startDateTime
@@ -158,7 +157,7 @@ public class CampaignController {
         List<Account> accounts = accountPage.getContent();
         Account account = accounts.get(0);
         //check if campagin exist
-        boolean isExistCampaign = campaignRepository.existsByName(campaignAndCreativesDTO.getCampaignDTO().getName());
+        boolean isExistCampaign = campaignRepository.existsByNameAndDeleteFlagIsFalse(campaignAndCreativesDTO.getCampaignDTO().getName());
         if(!isExistCampaign){
             boolean isExistCreative = creativeRepository.existsByTitleAndDeleteFlagIsFalse(campaignAndCreativesDTO.getCreativesDTO().getTitle());
             if(!isExistCreative){
