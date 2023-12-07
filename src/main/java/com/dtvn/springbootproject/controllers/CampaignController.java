@@ -147,7 +147,13 @@ public class CampaignController {
         bearerToken = bearerToken.replace(AuthConstants.BEARER_PREFIX, "");
         final String currenAccount = jwtService.extractUsername(bearerToken);
         Pageable pageable = PageRequest.of(Integer.parseInt(AppConstants.DEFAULT_PAGE_NUMBER), Integer.parseInt(AppConstants.DEFAULT_PAGE_SIZE));
-        Page<Account> accountPage = accountRepository.findAccountByEmailOrName(currenAccount, pageable);
+        Page<Account> accountPage;
+        try{
+            accountPage = accountRepository.findAccountByEmailOrName(currenAccount, pageable);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ResponseMessage<>(AppConstants.ACCOUNT_NOT_FOUND, HTTP_BAD_REQUEST));
+        }
 
         List<Account> accounts = accountPage.getContent();
         Account account = accounts.get(0);
@@ -156,9 +162,18 @@ public class CampaignController {
         if(!isExistCampaign){
             boolean isExistCreative = creativeRepository.existsByTitleAndDeleteFlagIsFalse(campaignAndCreativesDTO.getCreativesDTO().getTitle());
             if(!isExistCreative){
-                campaignService.createCampaign(campaignAndCreativesDTO, account);
-                return ResponseEntity.status(HttpStatus.OK)
-                        .body(new ResponseMessage<>(AppConstants.CAMPAIGN_CREATE_SUCCESS, HTTP_OK,campaignAndCreativesDTO));
+                CampaignDTO campaignDTO = campaignAndCreativesDTO.getCampaignDTO();
+                if (campaignDTO.getEndDate().toInstant().isAfter(campaignDTO.getStartDate().toInstant())) {
+                    // endDateTime after startDateTime
+                    campaignService.createCampaign(campaignAndCreativesDTO, account);
+                    return ResponseEntity.status(HttpStatus.OK)
+                            .body(new ResponseMessage<>(AppConstants.CAMPAIGN_CREATE_SUCCESS, HTTP_OK,campaignAndCreativesDTO));
+                } else {
+                    // endDateTime not after startDateTime
+                    return ResponseEntity.status(HttpStatus.OK)
+                            .body(new ResponseMessage<>(AppConstants.STARTDATE_IS_AFTER_ENDDATE, HTTP_BAD_REQUEST));
+                }
+
             } else{
                 return  ResponseEntity.status(HttpStatus.OK)
                         .body(new ResponseMessage<>(AppConstants.CREATIVES_ALREADY_EXISTS, HTTP_BAD_REQUEST));

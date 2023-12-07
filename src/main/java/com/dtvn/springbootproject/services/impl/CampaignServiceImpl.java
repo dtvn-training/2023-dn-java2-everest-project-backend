@@ -76,9 +76,7 @@ public class CampaignServiceImpl implements CampaignService {
         } catch (Exception e){
                 throw new ErrorException(AppConstants.CAMPAGIGN_UPDATE_FAILED, HttpConstants.HTTP_FORBIDDEN);
         }
-
     }
-
     @Override
     public CampaignAndCreativesDTO createCampaign(CampaignAndCreativesDTO campaignAndCreativesDTO, Account account) {
         CampaignDTO campaignDTO = campaignAndCreativesDTO.getCampaignDTO();
