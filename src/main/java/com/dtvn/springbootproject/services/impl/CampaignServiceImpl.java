@@ -1,11 +1,13 @@
 package com.dtvn.springbootproject.services.impl;
 import com.dtvn.springbootproject.constants.AppConstants;
+import com.dtvn.springbootproject.constants.HttpConstants;
 import com.dtvn.springbootproject.dto.responseDtos.Campaign.CampaignAndCreativesDTO;
 import com.dtvn.springbootproject.dto.responseDtos.Campaign.CampaignDTO;
 import com.dtvn.springbootproject.dto.responseDtos.Creative.CreativeDTO;
 import com.dtvn.springbootproject.entities.Account;
 import com.dtvn.springbootproject.entities.Campaign;
 import com.dtvn.springbootproject.entities.Creatives;
+import com.dtvn.springbootproject.exceptions.ErrorException;
 import com.dtvn.springbootproject.repositories.AccountRepository;
 import com.dtvn.springbootproject.repositories.CampaignRepository;
 import com.dtvn.springbootproject.repositories.CreativeRepository;
@@ -42,14 +44,39 @@ public class CampaignServiceImpl implements CampaignService {
     @Override
     public void deleteCampaign(int campaignId) {
         Campaign campaign = campaignRepository.findById(campaignId)
-                .orElseThrow(() -> new RuntimeException(AppConstants.CAMPAGIN_NOT_FOUND));
+                .orElseThrow(() -> new RuntimeException(AppConstants.CAMPAIGN_NOT_FOUND));
         campaign.setDeleteFlag(true);
         campaignRepository.save(campaign);
     }
 
     @Override
-    public CampaignDTO updateCampagin(Integer campaginId, CampaignDTO campaignDTO) {
-        return null;
+    public CampaignAndCreativesDTO updateCampagin(Integer campaginId,CampaignAndCreativesDTO campaignAndCreativesDTO ) {
+        CampaignDTO campaignDTO = campaignAndCreativesDTO.getCampaignDTO();
+        CreativeDTO creativeDTO = campaignAndCreativesDTO.getCreativesDTO();
+        try{
+            Optional<Campaign> oldCampaign = campaignRepository.findById(campaginId);
+            Optional<Creatives> oldCreate = creativeRepository.findByCampaignIdAndDeleteFlagIsFalse(oldCampaign)  ;
+        if(oldCampaign.isPresent()){
+            //update campaign
+            oldCampaign.get().setStatus(campaignDTO.getStatus());
+            oldCampaign.get().setBudget(campaignDTO.getBudget());
+            oldCampaign.get().setBidAmount(campaignDTO.getBidAmount());
+            oldCampaign.get().setStartDate(campaignDTO.getStartDate());
+            oldCampaign.get().setEndDate(campaignDTO.getEndDate());
+            //update creative
+            oldCreate.get().setTitle(creativeDTO.getTitle());
+            oldCreate.get().setDescription(creativeDTO.getDescription());
+            oldCreate.get().setImageUrl(creativeDTO.getImageUrl());
+            oldCreate.get().setFinalUrl(creativeDTO.getFinalUrl());
+            campaignRepository.save(oldCampaign.get());
+            creativeRepository.save(oldCreate.get());
+            return campaignAndCreativesDTO;
+        } else throw new ErrorException(AppConstants.CAMPAGIGN_UPDATE_FAILED, HttpConstants.HTTP_FORBIDDEN);
+
+        } catch (Exception e){
+                throw new ErrorException(AppConstants.CAMPAGIGN_UPDATE_FAILED, HttpConstants.HTTP_FORBIDDEN);
+        }
+
     }
 
     @Override

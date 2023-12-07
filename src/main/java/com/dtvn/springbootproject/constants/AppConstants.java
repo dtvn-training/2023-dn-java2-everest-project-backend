@@ -20,13 +20,16 @@ public class AppConstants {
     public static final String ROLES_GET_ALL_FAILED = "Get all role failed";
     public static final String CAMPAIGN_GET_SUCCESS = "Get campagins success";
     public static final String CAMPAIGN_CREATE_FAILED = "Create campagin failed";
-    public static final String CAMPAGIN_CREATE_SUCCESS = "Create campaign success";
-    public static final String CAMPAGIN_NOT_FOUND = "Campaign not found";
-    public static final String CAMPAGIN_DELETE_SUCCESS= "Campaign deleted success";
-    public static final String CAMPAGIN_ID_INVALID= "Campaign id invalid";
-    public static final String CAMPAGIN_IS_DELETED = "Campagin has been deleted";
-    public static final String CAMPAGIN_ALREADY_EXISTS = "Campaign already exists";
-    public static final String CAMPAGIN_UPDATE_SUCCESS = "Campaign update success";
+    public static final String CAMPAIGN_CREATE_SUCCESS = "Create campaign success";
+    public static final String CAMPAIGN_NOT_FOUND = "Campaign not found";
+    public static final String CAMPAIGN_DELETE_SUCCESS= "Campaign deleted success";
+    public static final String CAMPAIGN_ID_INVALID= "Campaign id invalid";
+    public static final String CAMPAGIGN_IS_DELETED = "Campagin has been deleted";
+    public static final String CAMPAGIGN_ALREADY_EXISTS = "Campaign already exists";
+    public static final String CAMPAGIGN_UPDATE_SUCCESS = "Campaign update success";
+    public static final String CAMPAGIGN_UPDATE_FAILED = "Campaign update failed";
     public static final String CREATIVES_ALREADY_EXISTS = "Creatives already exists";
+    public static final String CREATIVES_NOT_FOUND= "Creatives not found";
+    public static final String STARTDATE_IS_AFTER_ENDDATE = "Start date is after End date";
 }
 

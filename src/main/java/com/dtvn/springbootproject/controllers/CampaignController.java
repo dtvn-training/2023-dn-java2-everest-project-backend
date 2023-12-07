@@ -6,8 +6,10 @@ import com.dtvn.springbootproject.constants.AuthConstants;
 import com.dtvn.springbootproject.constants.HttpConstants;
 import com.dtvn.springbootproject.dto.responseDtos.Campaign.CampaignAndCreativesDTO;
 import com.dtvn.springbootproject.dto.responseDtos.Campaign.CampaignDTO;
+import com.dtvn.springbootproject.dto.responseDtos.Creative.CreativeDTO;
 import com.dtvn.springbootproject.entities.Account;
 import com.dtvn.springbootproject.entities.Campaign;
+import com.dtvn.springbootproject.entities.Creatives;
 import com.dtvn.springbootproject.exceptions.ResponseMessage;
 import com.dtvn.springbootproject.repositories.AccountRepository;
 import com.dtvn.springbootproject.repositories.CampaignRepository;
@@ -65,19 +67,19 @@ public class CampaignController {
             if(campaign.isPresent()){
                 if(campaign.get().isDeleteFlag() == true){
                     return ResponseEntity.status(HttpStatus.OK)
-                            .body(new ResponseMessage<>(AppConstants.CAMPAGIN_IS_DELETED, HTTP_BAD_REQUEST));
+                            .body(new ResponseMessage<>(AppConstants.CAMPAGIGN_IS_DELETED, HTTP_BAD_REQUEST));
                 } else {
                     campaignService.deleteCampaign(campaignId);
                     return ResponseEntity.status(HttpStatus.OK)
-                            .body(new ResponseMessage<>(AppConstants.CAMPAGIN_DELETE_SUCCESS, HTTP_BAD_REQUEST));
+                            .body(new ResponseMessage<>(AppConstants.CAMPAIGN_DELETE_SUCCESS, HTTP_BAD_REQUEST));
                 }
             }else{
                 return ResponseEntity.status(HttpStatus.OK)
-                        .body(new ResponseMessage<>(AppConstants.CAMPAGIN_NOT_FOUND, HTTP_BAD_REQUEST));
+                        .body(new ResponseMessage<>(AppConstants.CAMPAIGN_NOT_FOUND, HTTP_BAD_REQUEST));
             }
         } catch (NumberFormatException e){
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ResponseMessage<>(AppConstants.CAMPAGIN_ID_INVALID, HTTP_BAD_REQUEST));
+                    .body(new ResponseMessage<>(AppConstants.CAMPAIGN_ID_INVALID, HTTP_BAD_REQUEST));
         } catch (Exception e){
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ResponseMessage<>(AppConstants.ACCOUNT_DELETE_FAILD, HTTP_BAD_REQUEST));
@@ -85,22 +87,54 @@ public class CampaignController {
     }
 
     @PutMapping("/updateCampagin")
-    public ResponseEntity<ResponseMessage<ResponseEntity>> updateCampaign(
-            @PathVariable String strCampaignId,
-            @RequestBody CampaignDTO newCamapaign){
+    public ResponseEntity<ResponseMessage<CampaignAndCreativesDTO>> updateCampaign(
+            @RequestParam(value = "id", required = true) String strCampaignId,
+            @RequestBody CampaignAndCreativesDTO campaignAndCreativesDTO){
+
         if(campaignService.isInteger(strCampaignId)){
             Integer campaignId = Integer.parseInt(strCampaignId);
-            if(campaignRepository.existsByName(newCamapaign.getName())){
-                return ResponseEntity.status(HttpStatus.OK)
-                        .body(new ResponseMessage<>(AppConstants.CAMPAGIN_ALREADY_EXISTS, HTTP_BAD_REQUEST));
+            CreativeDTO creatives = campaignAndCreativesDTO.getCreativesDTO();
+            String creativesName = creatives.getTitle();
+            Optional<Campaign> oldCampaign = campaignRepository.findById(campaignId);
+
+            //check campagin is present
+            if(oldCampaign.isPresent()){
+                //if campagin present: true
+                    Optional<Creatives> oldCreate = creativeRepository.findByCampaignIdAndDeleteFlagIsFalse(oldCampaign);
+                    //check if creatives is present
+                    if(oldCreate.isPresent()){
+                        //check if creatives is present: true
+                        if(creatives.getTitle().equals(oldCreate.get().getTitle())
+                                || !creativeRepository.existsByTitleAndDeleteFlagIsFalse(creativesName)){
+
+                            CampaignDTO campaignDTO = campaignAndCreativesDTO.getCampaignDTO();
+                            if (campaignDTO.getEndDate().toInstant().isAfter(campaignDTO.getStartDate().toInstant())) {
+                                // endDateTime after startDateTime
+                                campaignService.updateCampagin(campaignId,campaignAndCreativesDTO);
+                                return ResponseEntity.status(HttpStatus.OK)
+                                        .body(new ResponseMessage<>(AppConstants.CAMPAGIGN_UPDATE_SUCCESS, HTTP_OK, campaignAndCreativesDTO));
+                            } else {
+                                // endDateTime not after startDateTime
+                                return ResponseEntity.status(HttpStatus.OK)
+                                        .body(new ResponseMessage<>(AppConstants.STARTDATE_IS_AFTER_ENDDATE, HTTP_BAD_REQUEST));
+                            }
+                        } else {
+                            return ResponseEntity.status(HttpStatus.OK)
+                                    .body(new ResponseMessage<>(AppConstants.CREATIVES_ALREADY_EXISTS, HTTP_BAD_REQUEST));
+                        }
+                        //check if creatives is present: false
+                    } else {
+                        return ResponseEntity.status(HttpStatus.OK)
+                                .body(new ResponseMessage<>(AppConstants.CREATIVES_NOT_FOUND, HTTP_BAD_REQUEST));
+                    }
+                //if campagin present: false
             } else{
-                campaignService.updateCampagin(campaignId, newCamapaign);
                 return ResponseEntity.status(HttpStatus.OK)
-                        .body(new ResponseMessage<>(AppConstants.CAMPAGIN_UPDATE_SUCCESS, HTTP_OK));
+                        .body(new ResponseMessage<>(AppConstants.CAMPAIGN_NOT_FOUND, HTTP_BAD_REQUEST));
             }
         } else{
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ResponseMessage<>(AppConstants.CAMPAGIN_ID_INVALID, HTTP_BAD_REQUEST));
+                    .body(new ResponseMessage<>(AppConstants.CAMPAIGN_ID_INVALID, HTTP_BAD_REQUEST));
         }
     }
 
@@ -120,18 +154,18 @@ public class CampaignController {
         //check if campagin exist
         boolean isExistCampaign = campaignRepository.existsByName(campaignAndCreativesDTO.getCampaignDTO().getName());
         if(!isExistCampaign){
-            boolean isExistCreative = creativeRepository.existsByTitle(campaignAndCreativesDTO.getCreativesDTO().getTitle());
+            boolean isExistCreative = creativeRepository.existsByTitleAndDeleteFlagIsFalse(campaignAndCreativesDTO.getCreativesDTO().getTitle());
             if(!isExistCreative){
                 campaignService.createCampaign(campaignAndCreativesDTO, account);
                 return ResponseEntity.status(HttpStatus.OK)
-                        .body(new ResponseMessage<>(AppConstants.CAMPAGIN_CREATE_SUCCESS, HTTP_OK,campaignAndCreativesDTO));
+                        .body(new ResponseMessage<>(AppConstants.CAMPAIGN_CREATE_SUCCESS, HTTP_OK,campaignAndCreativesDTO));
             } else{
                 return  ResponseEntity.status(HttpStatus.OK)
                         .body(new ResponseMessage<>(AppConstants.CREATIVES_ALREADY_EXISTS, HTTP_BAD_REQUEST));
             }
         } else{
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ResponseMessage<>(AppConstants.CAMPAGIN_ALREADY_EXISTS, HTTP_BAD_REQUEST));
+                    .body(new ResponseMessage<>(AppConstants.CAMPAGIGN_ALREADY_EXISTS, HTTP_BAD_REQUEST));
         }
     }
 

@@ -17,6 +17,7 @@ public class CampaignDTO {
     private Integer usedAmount;
     private Float usageRate;
     private Boolean status;
+    private Long bidAmount;
 }
 
 
