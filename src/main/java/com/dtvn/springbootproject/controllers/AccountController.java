@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,7 @@ import static com.dtvn.springbootproject.constants.AppConstants.*;
 import static com.dtvn.springbootproject.constants.ErrorConstants.ERROR_EMAIL_ALREADY_EXISTS;
 import static com.dtvn.springbootproject.constants.HttpConstants.*;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/v1/accounts")
 @RequiredArgsConstructor
@@ -36,8 +38,7 @@ public class AccountController {
     private final JwtService jwtService;
     private final RoleRepository roleRepository;
 
-
-    @PostMapping
+    @PostMapping("/registerAccount")
     public ResponseEntity<ResponseMessage<AccountResponseDTO>> registerAnAccount(
             @RequestBody AccountRegisterRequestDTO request
     ) {
@@ -54,6 +55,7 @@ public class AccountController {
                     .body(new ResponseMessage(ACCOUNT_REGISTER_FAILED, HTTP_INTERNAL_SERVER_ERROR));
         }
     }
+
 
     @GetMapping("/getAllAccount")
     public ResponseEntity<ResponseMessage<Page<AccountDTO> >> getAccounts(@RequestParam(value = "emailOrName", required = false) String emailOrName,
@@ -75,6 +77,7 @@ public class AccountController {
     }
 
     @PatchMapping("/deleteAccount")
+
     public ResponseEntity<ResponseMessage<AccountDTO>> deleteAccount(
             @RequestParam(value = "id", required = true) String AccountId,
             @RequestHeader("Authorization") String bearerToken)  {
@@ -114,12 +117,9 @@ public class AccountController {
     }
 
     @PutMapping("/update")
+
         public ResponseEntity<ResponseMessage<AccountDTO>> updateAccount(@RequestParam(value = "id", required = true) Integer accountId,
                                                  @RequestBody AccountDTO updatedAccount){
-        if(accountRepository.existsByEmail(updatedAccount.getEmail())){
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ResponseMessage(ERROR_EMAIL_ALREADY_EXISTS, HTTP_BAD_REQUEST));
-        }
         AccountDTO accountUpdated = accountService.updatedAccount(accountId, updatedAccount);
         if (accountUpdated != null) {
             return ResponseEntity.status(HttpStatus.OK)

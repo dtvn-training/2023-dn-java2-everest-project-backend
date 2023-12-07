@@ -21,7 +21,7 @@ public class SpringbootProjectApplication {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings( @NonNull CorsRegistry registry) {
-				registry.addMapping("/api/v1/auth/login")
+				registry.addMapping("/api/**")
 						.allowedOrigins("http://localhost:3000")
 						.allowedMethods("GET", "POST", "PUT", "DELETE")
 						.allowedHeaders("*")
