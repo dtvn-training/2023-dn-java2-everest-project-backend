@@ -18,7 +18,7 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
     @Query("SELECT a FROM Account a WHERE LOWER(a.lastname) LIKE LOWER(concat('%', :lastName, '%'))")
     Page<AccountDTO> findByName(String lastName, Pageable pageable);
     Page<AccountDTO> findByEmail(String email, Pageable  pageable);
-    @Query("SELECT a FROM Account a WHERE a.deleteFlag = 0")
+    @Query("SELECT a FROM Account a WHERE a.deleteFlag = false")
     Page<Account> getAllAccount(Pageable pageable);
     @Query("SELECT a FROM Account a WHERE LOWER(a.lastname) " +
             "LIKE LOWER(concat('%', :lastName, '%')) or LOWER(a.email) LIKE LOWER(concat('%', :lastName, '%'))")
