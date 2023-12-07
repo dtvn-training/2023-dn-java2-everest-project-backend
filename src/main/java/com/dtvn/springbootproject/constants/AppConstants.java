@@ -27,4 +27,11 @@ public class AppConstants {
     public static final String CAMPAGIN_IS_DELETED = "Campagin has been deleted";
     public static final String CAMPAGIN_ALREADY_EXISTS = "Campaign already exists";
     public static final String CAMPAGIN_UPDATE_SUCCESS = "Campaign update success";
+
+
+
+    //Firebase Constants
+    public static final String FIREBASE_SDK_JSON ="firebase/everest-471a5-firebase-adminsdk-jv4ts-e65c5b459d.json";
+    public static final String FIREBASE_BUCKET = "everest-471a5.appspot.com";
+    public static final String FIREBASE_PROJECT_ID ="everest-471a5";
 }
