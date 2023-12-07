@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
 
@@ -24,7 +26,7 @@ public class Campaign {
     @Column(name = "startdate")
     private Timestamp startDate;
 
-    @Column(name = "endDate")
+    @Column(name = "enddate")
     private Timestamp endDate;
 
     @Column(name = "budget")
@@ -37,9 +39,11 @@ public class Campaign {
     @JoinColumn(name = "account_id", nullable = false)
     private Account accountId;
 
+    @CreationTimestamp
     @Column(name = "create_at", nullable = false)
     private Timestamp createdAt;
 
+    @UpdateTimestamp
     @Column(name = "update_at")
     private Timestamp updateAt;
 

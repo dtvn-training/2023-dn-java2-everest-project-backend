@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
 
@@ -35,13 +37,15 @@ public class Creatives {
     @JoinColumn(name = "campaign_id")
     private Campaign campaignId;
 
+    @CreationTimestamp
     @Column(name = "create_at")
     private Timestamp createAt;
 
+    @UpdateTimestamp
     @Column(name = "update_at")
     private Timestamp updateAt;
 
-    @Column(name = "delete_flag")
+    @Column(name = "delete_flag", nullable = false, columnDefinition = "boolean default false")
     private Boolean deleteFlag;
 
 }

@@ -17,5 +17,4 @@ public class CreativeDTO {
     private String description;
     private String imageUrl;
     private String finalUrl;
-
 }
