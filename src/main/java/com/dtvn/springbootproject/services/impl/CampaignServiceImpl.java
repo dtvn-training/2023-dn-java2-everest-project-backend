@@ -12,12 +12,14 @@ import com.dtvn.springbootproject.repositories.AccountRepository;
 import com.dtvn.springbootproject.repositories.CampaignRepository;
 import com.dtvn.springbootproject.repositories.CreativeRepository;
 import com.dtvn.springbootproject.services.CampaignService;
+import com.dtvn.springbootproject.services.FirebaseService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
@@ -28,7 +30,8 @@ public class CampaignServiceImpl implements CampaignService {
     private CampaignRepository campaignRepository;
     @Autowired
     private CreativeRepository creativeRepository;
-
+    @Autowired
+    private FirebaseService  firebaseService;
     private final ModelMapper mapper = new ModelMapper();
 
     @Override
@@ -50,7 +53,7 @@ public class CampaignServiceImpl implements CampaignService {
     }
 
     @Override
-    public CampaignAndCreativesDTO updateCampagin(Integer campaginId,CampaignAndCreativesDTO campaignAndCreativesDTO ) {
+    public CampaignAndCreativesDTO updateCampagin(Integer campaginId,CampaignAndCreativesDTO campaignAndCreativesDTO, MultipartFile file ) {
         CampaignDTO campaignDTO = campaignAndCreativesDTO.getCampaignDTO();
         CreativeDTO creativeDTO = campaignAndCreativesDTO.getCreativesDTO();
         try{
@@ -63,10 +66,18 @@ public class CampaignServiceImpl implements CampaignService {
             oldCampaign.get().setBidAmount(campaignDTO.getBidAmount());
             oldCampaign.get().setStartDate(campaignDTO.getStartDate());
             oldCampaign.get().setEndDate(campaignDTO.getEndDate());
+
             //update creative
             oldCreate.get().setTitle(creativeDTO.getTitle());
             oldCreate.get().setDescription(creativeDTO.getDescription());
-            oldCreate.get().setImageUrl(creativeDTO.getImageUrl());
+            //check if img is change
+            if(!file.isEmpty()){
+                String imgurl = firebaseService.uploadFile(file);
+                oldCreate.get().setImageUrl(imgurl);
+                campaignAndCreativesDTO.getCreativesDTO().setImageUrl(imgurl);
+            } else {
+                campaignAndCreativesDTO.getCreativesDTO().setImageUrl(oldCreate.get().getImageUrl());
+            }
             oldCreate.get().setFinalUrl(creativeDTO.getFinalUrl());
             campaignRepository.save(oldCampaign.get());
             creativeRepository.save(oldCreate.get());
@@ -74,6 +85,7 @@ public class CampaignServiceImpl implements CampaignService {
         } else throw new ErrorException(AppConstants.CAMPAGIGN_UPDATE_FAILED, HttpConstants.HTTP_FORBIDDEN);
 
         } catch (Exception e){
+                System.out.println(e.getMessage());
                 throw new ErrorException(AppConstants.CAMPAGIGN_UPDATE_FAILED, HttpConstants.HTTP_FORBIDDEN);
         }
     }

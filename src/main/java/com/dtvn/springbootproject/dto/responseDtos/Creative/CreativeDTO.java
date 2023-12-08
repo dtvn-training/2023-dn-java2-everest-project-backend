@@ -12,7 +12,6 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreativeDTO {
-    private Integer creativeId;
     private String title;
     private String description;
     private String imageUrl;

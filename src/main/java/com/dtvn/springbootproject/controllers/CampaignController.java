@@ -93,7 +93,8 @@ public class CampaignController {
     @PutMapping("/updateCampagin")
     public ResponseEntity<ResponseMessage<CampaignAndCreativesDTO>> updateCampaign(
             @RequestParam(value = "id", required = true) String strCampaignId,
-            @RequestBody CampaignAndCreativesDTO campaignAndCreativesDTO){
+            @RequestPart(value = "file", required = true) MultipartFile file,
+            @RequestPart(value = "data", required = true) CampaignAndCreativesDTO campaignAndCreativesDTO) throws IOException {
 
         if(campaignService.isInteger(strCampaignId)){
             Integer campaignId = Integer.parseInt(strCampaignId);
@@ -113,7 +114,7 @@ public class CampaignController {
                             CampaignDTO campaignDTO = campaignAndCreativesDTO.getCampaignDTO();
                             if (campaignDTO.getEndDate().toInstant().isAfter(campaignDTO.getStartDate().toInstant())) {
                                 // endDateTime after startDateTime
-                                campaignService.updateCampagin(campaignId,campaignAndCreativesDTO);
+                                campaignService.updateCampagin(campaignId,campaignAndCreativesDTO, file);
                                 return ResponseEntity.status(HttpStatus.OK)
                                         .body(new ResponseMessage<>(AppConstants.CAMPAGIGN_UPDATE_SUCCESS, HTTP_OK, campaignAndCreativesDTO));
                             } else {
@@ -131,7 +132,7 @@ public class CampaignController {
                                 .body(new ResponseMessage<>(AppConstants.CREATIVES_NOT_FOUND, HTTP_BAD_REQUEST));
                     }
                 //if campagin present: false
-            } else{
+            } else {
                 return ResponseEntity.status(HttpStatus.OK)
                         .body(new ResponseMessage<>(AppConstants.CAMPAIGN_NOT_FOUND, HTTP_BAD_REQUEST));
             }
@@ -141,12 +142,11 @@ public class CampaignController {
         }
     }
 
-    @PostMapping(value = "/createCampagin",consumes = { "multipart/form-data" })
+    @PostMapping(value = "/createCampagin",consumes = {"multipart/form-data"})
     public ResponseEntity<ResponseMessage<CampaignAndCreativesDTO>> createCamapagin(
             @RequestPart("file") MultipartFile file,
             @RequestPart("data") CampaignAndCreativesDTO campaignAndCreativesDTO,
             @RequestHeader("Authorization") String bearerToken) throws IOException {
-
         //Delete "bearer" in token
         bearerToken = bearerToken.replace(AuthConstants.BEARER_PREFIX, "");
         final String currenAccount = jwtService.extractUsername(bearerToken);
@@ -158,7 +158,6 @@ public class CampaignController {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ResponseMessage<>(AppConstants.ACCOUNT_NOT_FOUND, HTTP_BAD_REQUEST));
         }
-
         List<Account> accounts = accountPage.getContent();
         Account account = accounts.get(0);
         //check if campagin exist
@@ -179,7 +178,6 @@ public class CampaignController {
                     return ResponseEntity.status(HttpStatus.OK)
                             .body(new ResponseMessage<>(AppConstants.STARTDATE_IS_AFTER_ENDDATE, HTTP_BAD_REQUEST));
                 }
-
             } else{
                 return  ResponseEntity.status(HttpStatus.OK)
                         .body(new ResponseMessage<>(AppConstants.CREATIVES_ALREADY_EXISTS, HTTP_BAD_REQUEST));

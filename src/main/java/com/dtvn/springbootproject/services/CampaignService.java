@@ -5,11 +5,12 @@ import com.dtvn.springbootproject.entities.Account;
 import com.dtvn.springbootproject.entities.Campaign;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface CampaignService {
     public Page<CampaignDTO> getCampaign(String name, Pageable pageable);
     public void deleteCampaign(int campaignId);
-    public CampaignAndCreativesDTO updateCampagin(Integer campaginId, CampaignAndCreativesDTO campaignAndCreativesDTO);
+    public CampaignAndCreativesDTO updateCampagin(Integer campaginId, CampaignAndCreativesDTO campaignAndCreativesDTO, MultipartFile file);
     public CampaignAndCreativesDTO createCampaign(CampaignAndCreativesDTO campaignAndCreativesDTO, Account account);
     public boolean isInteger(String number);
     public Campaign maptoEntity(CampaignDTO campaignDTO);
