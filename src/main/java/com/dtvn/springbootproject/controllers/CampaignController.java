@@ -15,6 +15,7 @@ import com.dtvn.springbootproject.repositories.AccountRepository;
 import com.dtvn.springbootproject.repositories.CampaignRepository;
 import com.dtvn.springbootproject.repositories.CreativeRepository;
 import com.dtvn.springbootproject.services.CampaignService;
+import com.dtvn.springbootproject.services.FirebaseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,7 +23,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,6 +41,7 @@ public class CampaignController {
     private final CreativeRepository creativeRepository;
     private final AccountRepository accountRepository;
     private final JwtService jwtService;
+    private final FirebaseService firebaseService;
     @GetMapping("/getCampaign")
     public ResponseEntity<ResponseMessage<Page<CampaignDTO>>> getCampaign(
             @RequestParam(value = "name", required = false) String name,
@@ -137,10 +141,11 @@ public class CampaignController {
         }
     }
 
-    @PostMapping("/createCampagin")
+    @PostMapping(value = "/createCampagin",consumes = { "multipart/form-data" })
     public ResponseEntity<ResponseMessage<CampaignAndCreativesDTO>> createCamapagin(
-            @RequestBody CampaignAndCreativesDTO campaignAndCreativesDTO,
-            @RequestHeader("Authorization") String bearerToken){
+            @RequestPart("file") MultipartFile file,
+            @RequestPart("data") CampaignAndCreativesDTO campaignAndCreativesDTO,
+            @RequestHeader("Authorization") String bearerToken) throws IOException {
 
         //Delete "bearer" in token
         bearerToken = bearerToken.replace(AuthConstants.BEARER_PREFIX, "");
@@ -164,6 +169,8 @@ public class CampaignController {
                 CampaignDTO campaignDTO = campaignAndCreativesDTO.getCampaignDTO();
                 if (campaignDTO.getEndDate().toInstant().isAfter(campaignDTO.getStartDate().toInstant())) {
                     // endDateTime after startDateTime
+                    String imgurl = firebaseService.uploadFile(file);
+                    campaignAndCreativesDTO.getCreativesDTO().setImageUrl(imgurl);
                     campaignService.createCampaign(campaignAndCreativesDTO, account);
                     return ResponseEntity.status(HttpStatus.OK)
                             .body(new ResponseMessage<>(AppConstants.CAMPAIGN_CREATE_SUCCESS, HTTP_OK,campaignAndCreativesDTO));

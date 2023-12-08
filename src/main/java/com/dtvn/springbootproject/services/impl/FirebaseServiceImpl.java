@@ -21,7 +21,7 @@ import static com.dtvn.springbootproject.constants.AppConstants.*;
 @Service
 public class FirebaseServiceImpl implements FirebaseService {
     @Override
-    public ResponseEntity<String> uploadFile(MultipartFile multipartFile) throws IOException {
+    public String uploadFile(MultipartFile multipartFile) throws IOException {
         String objectName = generateFileName(multipartFile);
 
         try (InputStream fileInputStream = multipartFile.getInputStream()) {
@@ -44,7 +44,7 @@ public class FirebaseServiceImpl implements FirebaseService {
                     "/o/" + objectName +
                     "?alt=media&token=" + generateToken();
 
-            return ResponseEntity.status(HttpStatus.CREATED).body("File uploaded successfully with URL: " + fileUrl);
+            return  fileUrl;
         }
     }
 
