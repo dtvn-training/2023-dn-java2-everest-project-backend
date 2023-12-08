@@ -46,10 +46,15 @@ public class CampaignServiceImpl implements CampaignService {
     }
     @Override
     public void deleteCampaign(int campaignId) {
-        Campaign campaign = campaignRepository.findByIdAndDeleteFlagIsFalse(campaignId)
-                .orElseThrow(() -> new RuntimeException(AppConstants.CAMPAIGN_NOT_FOUND));
-        campaign.setDeleteFlag(true);
-        campaignRepository.save(campaign);
+        Optional<Campaign> campaign = campaignRepository.findByIdAndDeleteFlagIsFalse(campaignId);
+        Optional<Creatives> creatives = creativeRepository.findByCampaignIdAndDeleteFlagIsFalse(campaign);
+        if(creatives.isPresent())
+            creatives.get().setDeleteFlag(true);
+        else {
+            throw new RuntimeException(AppConstants.CREATIVES_NOT_FOUND);
+        }
+        campaign.get().setDeleteFlag(true);
+        campaignRepository.save(campaign.get());
     }
 
     @Override

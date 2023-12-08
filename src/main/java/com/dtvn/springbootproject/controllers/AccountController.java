@@ -97,7 +97,7 @@ public class AccountController {
 //            If the account is deleted, it is the current account
             if(accountDelete.get().getEmail().equals(currentUserEmail)){
                 return ResponseEntity.status(HttpStatus.OK)
-                        .body(new ResponseMessage<>(ACCOUNT_DELETE_FAILD, HTTP_OK));
+                        .body(new ResponseMessage<>(ACCOUNT_DELETE_FAILD, HTTP_BAD_REQUEST));
             }
 
             //delete account

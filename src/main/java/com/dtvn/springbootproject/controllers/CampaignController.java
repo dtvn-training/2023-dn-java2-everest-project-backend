@@ -75,7 +75,7 @@ public class CampaignController {
                 } else {
                     campaignService.deleteCampaign(campaignId);
                     return ResponseEntity.status(HttpStatus.OK)
-                            .body(new ResponseMessage<>(AppConstants.CAMPAIGN_DELETE_SUCCESS, HTTP_BAD_REQUEST));
+                            .body(new ResponseMessage<>(AppConstants.CAMPAIGN_DELETE_SUCCESS, HTTP_OK));
                 }
             }else{
                 return ResponseEntity.status(HttpStatus.OK)
