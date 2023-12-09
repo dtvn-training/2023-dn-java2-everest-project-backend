@@ -19,12 +19,9 @@ import java.util.Map;
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(ErrorException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<Map<String, Object>> handleErrorException(ErrorException e) {
-        Map<String, Object> response = new HashMap<>();
-        response.put("code", e.getErrorCode());
-        response.put("message", e.getMessage());
-        response.put("error", e.getErrors());
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ResponseMessage<Object>> handleErrorException(ErrorException e) {
+        ResponseMessage<Object> responseMessage = new ResponseMessage<>(e.getMessage(), e.getErrorCode());
+        return new ResponseEntity<>(responseMessage, HttpStatus.BAD_REQUEST);
     }
+
 }

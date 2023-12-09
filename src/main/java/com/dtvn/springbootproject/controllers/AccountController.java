@@ -7,6 +7,7 @@ import com.dtvn.springbootproject.dto.responseDtos.Account.AccountResponseDTO;
 import com.dtvn.springbootproject.dto.requestDtos.Account.AccountRegisterRequestDTO;
 import com.dtvn.springbootproject.entities.Account;
 import com.dtvn.springbootproject.entities.Role;
+import com.dtvn.springbootproject.exceptions.ErrorException;
 import com.dtvn.springbootproject.exceptions.ResponseMessage;
 import com.dtvn.springbootproject.repositories.AccountRepository;
 import com.dtvn.springbootproject.repositories.RoleRepository;
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 import static com.dtvn.springbootproject.constants.AppConstants.*;
-import static com.dtvn.springbootproject.constants.ErrorConstants.ERROR_EMAIL_ALREADY_EXISTS;
+import static com.dtvn.springbootproject.constants.ErrorConstants.*;
 import static com.dtvn.springbootproject.constants.HttpConstants.*;
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -42,17 +43,25 @@ public class AccountController {
     public ResponseEntity<ResponseMessage<AccountResponseDTO>> registerAnAccount(
             @RequestBody AccountRegisterRequestDTO request
     ) {
-        if(accountRepository.existsByEmail(request.getEmail())){
+        try {
+            if (accountRepository.existsByEmail(request.getEmail())) {
+                return ResponseEntity.status(HttpStatus.OK)
+                        .body(new ResponseMessage(ERROR_EMAIL_ALREADY_EXISTS, HTTP_BAD_REQUEST));
+            }
+            AccountResponseDTO addedAccount = accountService.registerAnAccount(request);
+            if (addedAccount != null) {
+                return ResponseEntity.status(HttpStatus.OK)
+                        .body(new ResponseMessage<>(ACCOUNT_REGISTER_SUCCESS, HTTP_OK, addedAccount));
+            } else {
+                return ResponseEntity.status(HttpStatus.OK)
+                        .body(new ResponseMessage<>(ACCOUNT_REGISTER_FAILED, HTTP_INTERNAL_SERVER_ERROR));
+            }
+        } catch (ErrorException e) {
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ResponseMessage(ERROR_EMAIL_ALREADY_EXISTS, HTTP_BAD_REQUEST));
-        }
-        AccountResponseDTO addedAccount = accountService.registerAnAccount(request);
-        if (addedAccount != null) {
+                    .body(new ResponseMessage<>(e.getMessage(), HTTP_BAD_REQUEST));
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ResponseMessage(ACCOUNT_REGISTER_SUCCESS, HTTP_OK, addedAccount));
-        } else {
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ResponseMessage(ACCOUNT_REGISTER_FAILED, HTTP_INTERNAL_SERVER_ERROR));
+                    .body(new ResponseMessage<>(ERROR_UNKNOWN, HTTP_INTERNAL_SERVER_ERROR));
         }
     }
 

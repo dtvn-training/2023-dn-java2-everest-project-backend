@@ -39,4 +39,7 @@ public class ErrorConstants {
     public static final String ERROR_LOGIN_BAD_CREDENTIALS = "Email or password is incorrect.";
     public static final String ERROR_INTERNAL_SERVER = "Internal server error.";
     public static final String ERROR_ACCOUNT_HAS_BEEN_DELETED = "This account has been deleted.";
+
+    // Unknown Error
+    public static final String ERROR_UNKNOWN = "Undetermined error, please contact administrator for support.";
 }
