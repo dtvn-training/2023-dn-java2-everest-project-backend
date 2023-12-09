@@ -28,7 +28,7 @@ public class AccountValidator {
     }
 
     private void validateEmail(String email) {
-        if (email == null){
+        if (email.isEmpty()){
             throw new ErrorException(ERROR_EMAIL_REQUIRED, HTTP_BAD_REQUEST);
         }
         if (email.length() >= MAX_EMAIL_LENGTH){
@@ -40,7 +40,7 @@ public class AccountValidator {
     }
 
         private void validatePassword(String password) {
-            if (password == null){
+            if (password.isEmpty()){
                 throw new ErrorException(ERROR_PASSWORD_REQUIRED, HTTP_BAD_REQUEST);
             }
             PasswordValidator.PasswordValidationResult validationResult = PasswordValidator.validatePassword(password);
@@ -58,13 +58,12 @@ public class AccountValidator {
         }
 
     private void validateName(String name, String fieldName) {
-        if (name == null && fieldName.contains("Firstname")){
+        if (name.isEmpty() && fieldName.contains("Firstname")){
             throw new ErrorException(ERROR_FIRSTNAME_REQUIRED, HTTP_BAD_REQUEST);
         }
-        if (name == null && fieldName.contains("Lastname")){
+        if (name.isEmpty() && fieldName.contains("Lastname")) {
             throw new ErrorException(ERROR_LASTNAME_REQUIRED, HTTP_BAD_REQUEST);
         }
-        assert name != null;
         if (name.length() > MAX_FIRSTNAME_LENGTH && fieldName.contains("Firstname")){
             throw new ErrorException(ERROR_FIRSTNAME_MAX_LENGTH, HTTP_BAD_REQUEST);
         }
@@ -81,19 +80,19 @@ public class AccountValidator {
     }
 
     private void validatePhoneNumber(String phoneNumber) {
-        if (phoneNumber == null){
+        if (phoneNumber.isEmpty()){
             throw new ErrorException(ERROR_PHONE_REQUIRED, HTTP_BAD_REQUEST);
         }
         if (phoneNumber.length() > MAX_PHONE_LENGTH) {
-            throw new ErrorException(ERROR_PHONE_REQUIRED, HTTP_BAD_REQUEST);
+            throw new ErrorException(ERROR_PHONE_MAX_LENGTH, HTTP_BAD_REQUEST);
         }
         if (!phoneNumber.matches(PHONE_NUMBER_REGEX)) {
-            throw new ErrorException(ERROR_PHONE_MAX_LENGTH, HTTP_BAD_REQUEST);
+            throw new ErrorException(ERROR_PHONE_FORMAT_INVALID, HTTP_BAD_REQUEST);
         }
     }
 
     private void validateAddress(String address) {
-        if (address == null) {
+        if (address.isEmpty()) {
             throw new ErrorException(ERROR_ADDRESS_REQUIRED, HTTP_BAD_REQUEST);
         }
         if (address.length() > MAX_ADDRESS_LENGTH) {
