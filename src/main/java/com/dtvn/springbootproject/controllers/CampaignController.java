@@ -33,7 +33,7 @@ import java.util.Optional;
 import static com.dtvn.springbootproject.constants.HttpConstants.HTTP_BAD_REQUEST;
 import static com.dtvn.springbootproject.constants.HttpConstants.HTTP_OK;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin
 @RestController
 @RequestMapping("/api/v1/campaigns")
 @RequiredArgsConstructor

@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
@@ -15,7 +16,7 @@ public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
 
-    @CrossOrigin(origins = "http://localhost:3000")
+
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponseDTO> authenticate(
 

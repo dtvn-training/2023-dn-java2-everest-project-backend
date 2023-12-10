@@ -27,7 +27,7 @@ import static com.dtvn.springbootproject.constants.AppConstants.*;
 import static com.dtvn.springbootproject.constants.ErrorConstants.*;
 import static com.dtvn.springbootproject.constants.HttpConstants.*;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin
 @RestController
 @RequestMapping("/api/v1/accounts")
 @RequiredArgsConstructor
