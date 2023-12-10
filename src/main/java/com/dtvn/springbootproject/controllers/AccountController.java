@@ -70,19 +70,28 @@ public class AccountController {
     public ResponseEntity<ResponseMessage<Page<AccountDTO> >> getAccounts(@RequestParam(value = "emailOrName", required = false) String emailOrName,
                                                @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,required = false) String strPageNo,
                                                @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) String strPageSize) {
-        if(!accountService.isInteger(strPageNo))
+        try {
+            if(!accountService.isInteger(strPageNo))
+                return ResponseEntity.status(HttpStatus.OK)
+                        .body(new ResponseMessage<>(AppConstants.PAGENO_INVALID, HTTP_BAD_REQUEST));
+            else if(!accountService.isInteger(strPageSize)){
+                return ResponseEntity.status(HttpStatus.OK)
+                        .body(new ResponseMessage<>(AppConstants.PAGESIZE_INVALID, HTTP_BAD_REQUEST));
+            }
+            int pageNo = Integer.parseInt(strPageNo);
+            int pageSize = Integer.parseInt(strPageSize);
+            Pageable pageable = PageRequest.of(pageNo, pageSize);
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ResponseMessage<>(AppConstants.PAGENO_INVALID, HTTP_BAD_REQUEST));
-        else if(!accountService.isInteger(strPageSize)){
+                    .body(new ResponseMessage<Page<AccountDTO>>(AppConstants.ACCOUNT_GET_ALL_SUCCESS, HTTP_OK,
+                            accountService.getAccountByEmailOrName(emailOrName, pageable)));
+        } catch (ErrorException e) {
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ResponseMessage<>(AppConstants.PAGESIZE_INVALID, HTTP_BAD_REQUEST));
+                    .body(new ResponseMessage<>(e.getMessage(), HTTP_BAD_REQUEST));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ResponseMessage<>(ERROR_UNKNOWN, HTTP_INTERNAL_SERVER_ERROR));
         }
-        int pageNo = Integer.parseInt(strPageNo);
-        int pageSize = Integer.parseInt(strPageSize);
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(new ResponseMessage<Page<AccountDTO>>(AppConstants.ACCOUNT_GET_ALL_SUCCESS, HTTP_OK,
-                        accountService.getAccountByEmailOrName(emailOrName, pageable)));
+
     }
 
     @PatchMapping("/deleteAccount")
@@ -128,27 +137,40 @@ public class AccountController {
 
         public ResponseEntity<ResponseMessage<AccountDTO>> updateAccount(@RequestParam(value = "id", required = true) Integer accountId,
                                                  @RequestBody AccountDTO updatedAccount){
-        AccountDTO accountUpdated = accountService.updatedAccount(accountId, updatedAccount);
-        if (accountUpdated != null) {
+        try {
+            AccountDTO accountUpdated = accountService.updatedAccount(accountId, updatedAccount);
+            if (accountUpdated != null) {
+                return ResponseEntity.status(HttpStatus.OK)
+                        .body(new ResponseMessage(AppConstants.ACCOUNT_UPDATE_SUCCESS, HTTP_OK,accountUpdated));
+            } else {
+                return ResponseEntity.status(HttpStatus.OK)
+                        .body(new ResponseMessage(AppConstants.ACCOUNT_NOT_FOUND, HTTP_NOT_FOUND));
+            }
+        } catch (ErrorException e) {
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ResponseMessage(AppConstants.ACCOUNT_UPDATE_SUCCESS, HTTP_OK,accountUpdated));
-        } else {
+                    .body(new ResponseMessage<>(e.getMessage(), HTTP_BAD_REQUEST));
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ResponseMessage(AppConstants.ACCOUNT_NOT_FOUND, HTTP_NOT_FOUND));
+                    .body(new ResponseMessage<>(ERROR_UNKNOWN, HTTP_BAD_REQUEST));
         }
+
     }
     @GetMapping("/getRoles")
     public ResponseEntity<ResponseMessage<List<Role>>> getAllRole() {
-        List<Role> listRole;
         try {
-            listRole = roleRepository.findAll();
-        } catch (Exception e) {
+            List<Role> listRole;
+            try {
+                listRole = roleRepository.findAll();
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.OK)
+                        .body(new ResponseMessage(AppConstants.ROLES_GET_ALL_FAILED, HTTP_NOT_FOUND));
+            }
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ResponseMessage(AppConstants.ROLES_GET_ALL_FAILED, HTTP_NOT_FOUND));
+                    .body(new ResponseMessage(AppConstants.ROLES_GET_ALL_SUCCESS, HTTP_OK, listRole));
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ResponseMessage<>(ERROR_UNKNOWN, HTTP_BAD_REQUEST));
         }
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(new ResponseMessage(AppConstants.ROLES_GET_ALL_SUCCESS, HTTP_OK, listRole));
+
     }
-
-
 }

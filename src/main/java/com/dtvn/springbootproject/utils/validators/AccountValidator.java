@@ -6,7 +6,9 @@ import com.dtvn.springbootproject.repositories.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.dtvn.springbootproject.constants.ErrorConstants.*;
 import static com.dtvn.springbootproject.constants.FieldValueLengthConstants.*;
@@ -19,87 +21,106 @@ public class AccountValidator {
     private final AccountRepository accountRepository;
 
     public void validateRegisterRequest(AccountRegisterRequestDTO request) {
-        validateEmail(request.getEmail());
-        validatePassword(request.getPassword());
-        validateName(request.getFirstname(), "Firstname");
-        validateName(request.getLastname(), "Lastname");
-        validatePhoneNumber(request.getPhone());
-        validateAddress(request.getAddress());
+        List<ValidationError> validationErrors = new ArrayList<>();
+
+        validateEmail(request.getEmail(), validationErrors);
+        validatePassword(request.getPassword(), validationErrors);
+        validateName(request.getFirstname(), "Firstname",validationErrors);
+        validateName(request.getLastname(), "Lastname",validationErrors);
+        validatePhoneNumber(request.getPhone(),validationErrors);
+        validateAddress(request.getAddress(),validationErrors);
+
+        if (!validationErrors.isEmpty()) {
+            String formattedErrors = validationErrors.stream()
+                    .map(error -> error.toString()) // Sử dụng lambda expression
+                    .collect(Collectors.joining(", ", "", ""));
+            throw new ErrorException(formattedErrors, HTTP_BAD_REQUEST);
+        }
     }
 
-    private void validateEmail(String email) {
-        if (email.isEmpty()){
-            throw new ErrorException(ERROR_EMAIL_REQUIRED, HTTP_BAD_REQUEST);
+    private void validateEmail(String email, List<ValidationError> errors) {
+        if (email.isEmpty()) {
+            errors.add(new ValidationError(ERROR_EMAIL_REQUIRED));
+            return;
         }
-        if (email.length() >= MAX_EMAIL_LENGTH){
-            throw new ErrorException(ERROR_EMAIL_MAX_LENGTH, HTTP_BAD_REQUEST);
+        if (email.length() >= MAX_EMAIL_LENGTH) {
+            errors.add(new ValidationError(ERROR_EMAIL_MAX_LENGTH));
+            return;
         }
         if (!email.matches(EMAIL_REGEX)) {
-            throw new ErrorException(ERROR_EMAIL_INVALID, HTTP_BAD_REQUEST);
+            errors.add(new ValidationError(ERROR_EMAIL_INVALID));
         }
     }
 
-        private void validatePassword(String password) {
-            if (password.isEmpty()){
-                throw new ErrorException(ERROR_PASSWORD_REQUIRED, HTTP_BAD_REQUEST);
-            }
-            PasswordValidator.PasswordValidationResult validationResult = PasswordValidator.validatePassword(password);
-
-    //        if (!validationResult.isValid()) {
-    //            validationResult.getErrors().forEach(error -> {
-    //                throw new ErrorException(error, HTTP_BAD_REQUEST);
-    //            });
-    //        }
-            if (!validationResult.isValid()) {
-                List<String> errors = validationResult.getErrors();
-                String formattedErrors = String.join(", ", errors);
-                throw new ErrorException(ERROR_PASSWORD_INVALID, HTTP_BAD_REQUEST,formattedErrors);
-            }
+    private void validatePassword(String password, List<ValidationError> errors) {
+        if (password.isEmpty()) {
+            errors.add(new ValidationError(ERROR_PASSWORD_REQUIRED));
         }
+        PasswordValidator.PasswordValidationResult validationResult = PasswordValidator.validatePassword(password);
 
-    private void validateName(String name, String fieldName) {
-        if (name.isEmpty() && fieldName.contains("Firstname")){
-            throw new ErrorException(ERROR_FIRSTNAME_REQUIRED, HTTP_BAD_REQUEST);
+        if (!validationResult.isValid()) {
+            List<String> passwordErrors = validationResult.getErrors();
+            String formattedErrors = String.join(", ", passwordErrors);
+            errors.add(new ValidationError(formattedErrors));
+        }
+    }
+
+    private void validateName(String name, String fieldName,List<ValidationError> errors) {
+        if (name.isEmpty() && fieldName.contains("Firstname")) {
+            errors.add(new ValidationError(ERROR_FIRSTNAME_REQUIRED));
         }
         if (name.isEmpty() && fieldName.contains("Lastname")) {
-            throw new ErrorException(ERROR_LASTNAME_REQUIRED, HTTP_BAD_REQUEST);
+            errors.add(new ValidationError(ERROR_LASTNAME_REQUIRED));
         }
-        if (name.length() > MAX_FIRSTNAME_LENGTH && fieldName.contains("Firstname")){
-            throw new ErrorException(ERROR_FIRSTNAME_MAX_LENGTH, HTTP_BAD_REQUEST);
+        if (name.length() > MAX_FIRSTNAME_LENGTH && fieldName.contains("Firstname")) {
+            errors.add(new ValidationError(ERROR_FIRSTNAME_MAX_LENGTH));
         }
-        if (name.length() > MAX_LASTNAME_LENGTH && fieldName.contains("Lastname")){
-            throw new ErrorException(ERROR_LASTNAME_MAX_LENGTH, HTTP_BAD_REQUEST);
+        if (name.length() > MAX_LASTNAME_LENGTH && fieldName.contains("Lastname")) {
+            errors.add(new ValidationError(ERROR_LASTNAME_MAX_LENGTH));
         }
 
         if (fieldName.contains("Firstname") && !name.matches(NAME_REGEX)) {
-            throw new ErrorException(ERROR_FIRSTNAME_INVALID, HTTP_BAD_REQUEST);
+            errors.add(new ValidationError(ERROR_FIRSTNAME_INVALID));
         }
         if (fieldName.contains("Lastname") && !name.matches(NAME_REGEX)) {
-            throw new ErrorException(ERROR_LASTNAME_INVALID, HTTP_BAD_REQUEST);
+            errors.add(new ValidationError(ERROR_LASTNAME_INVALID));
         }
     }
 
-    private void validatePhoneNumber(String phoneNumber) {
-        if (phoneNumber.isEmpty()){
-            throw new ErrorException(ERROR_PHONE_REQUIRED, HTTP_BAD_REQUEST);
+    private void validatePhoneNumber(String phoneNumber,List<ValidationError> errors) {
+        if (phoneNumber.isEmpty()) {
+            errors.add(new ValidationError(ERROR_PHONE_REQUIRED));
         }
         if (phoneNumber.length() > MAX_PHONE_LENGTH) {
-            throw new ErrorException(ERROR_PHONE_MAX_LENGTH, HTTP_BAD_REQUEST);
+            errors.add(new ValidationError(ERROR_PHONE_MAX_LENGTH));
         }
         if (!phoneNumber.matches(PHONE_NUMBER_REGEX)) {
-            throw new ErrorException(ERROR_PHONE_FORMAT_INVALID, HTTP_BAD_REQUEST);
+            errors.add(new ValidationError(ERROR_PHONE_FORMAT_INVALID));
         }
     }
 
-    private void validateAddress(String address) {
+    private void validateAddress(String address,List<ValidationError> errors) {
         if (address.isEmpty()) {
-            throw new ErrorException(ERROR_ADDRESS_REQUIRED, HTTP_BAD_REQUEST);
+            errors.add(new ValidationError(ERROR_ADDRESS_REQUIRED));
         }
         if (address.length() > MAX_ADDRESS_LENGTH) {
-            throw new ErrorException(ERROR_ADDRESS_MAX_LENGTH, HTTP_BAD_REQUEST);
+            errors.add(new ValidationError(ERROR_ADDRESS_MAX_LENGTH));
         }
         if (!address.matches(ADDRESS_REGEX)) {
-            throw new ErrorException(ERROR_ADDRESS_INVALID, HTTP_BAD_REQUEST);
+            errors.add(new ValidationError(ERROR_ADDRESS_INVALID));
+        }
+    }
+
+    private static class ValidationError {
+        private final String message;
+
+        public ValidationError(String message) {
+            this.message = message;
+        }
+
+        @Override
+        public String toString() {
+            return message;
         }
     }
 }
