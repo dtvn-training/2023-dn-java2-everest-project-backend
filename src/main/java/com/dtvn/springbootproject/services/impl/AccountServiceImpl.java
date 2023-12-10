@@ -101,6 +101,7 @@ public class AccountServiceImpl implements AccountService {
         Account existingAccount = accountRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException(AppConstants.ACCOUNT_NOT_FOUND));
         existingAccount.setDeleteFlag(true);
+        existingAccount.setUpdatedBy(getAuthenticatedAccount());
         accountRepository.save(existingAccount);
     }
     @Override
