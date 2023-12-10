@@ -42,6 +42,7 @@ public class AccountServiceImpl implements AccountService {
         Role role = roleRepository.findByRoleName(request.getRole())
                 .orElseThrow(() -> new ErrorException(ERROR_ROLE_NOT_FOUND, HTTP_NOT_FOUND));
         Account createdBy = getAuthenticatedAccount();
+        Account updatedBy = getAuthenticatedAccount();
         var account = Account.builder()
                 .firstname(request.getFirstname())
                 .lastname(request.getLastname())
@@ -51,6 +52,7 @@ public class AccountServiceImpl implements AccountService {
                 .address(request.getAddress())
                 .phone(request.getPhone())
                 .createdBy(createdBy)
+                .updatedBy(updatedBy)
                 .build();
         try {
             accountRepository.save(account);
