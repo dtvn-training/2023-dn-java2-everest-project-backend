@@ -21,8 +21,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.Optional;
+
 import static com.dtvn.springbootproject.constants.AppConstants.*;
 import static com.dtvn.springbootproject.constants.ErrorConstants.*;
 import static com.dtvn.springbootproject.constants.HttpConstants.*;
@@ -67,14 +69,14 @@ public class AccountController {
 
 
     @GetMapping("/getAllAccount")
-    public ResponseEntity<ResponseMessage<Page<AccountDTO> >> getAccounts(@RequestParam(value = "emailOrName", required = false) String emailOrName,
-                                               @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,required = false) String strPageNo,
-                                               @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) String strPageSize) {
+    public ResponseEntity<ResponseMessage<Page<AccountDTO>>> getAccounts(@RequestParam(value = "emailOrName", required = false) String emailOrName,
+                                                                         @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) String strPageNo,
+                                                                         @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) String strPageSize) {
         try {
-            if(!accountService.isInteger(strPageNo))
+            if (!accountService.isInteger(strPageNo))
                 return ResponseEntity.status(HttpStatus.OK)
                         .body(new ResponseMessage<>(AppConstants.PAGENO_INVALID, HTTP_BAD_REQUEST));
-            else if(!accountService.isInteger(strPageSize)){
+            else if (!accountService.isInteger(strPageSize)) {
                 return ResponseEntity.status(HttpStatus.OK)
                         .body(new ResponseMessage<>(AppConstants.PAGESIZE_INVALID, HTTP_BAD_REQUEST));
             }
@@ -97,7 +99,7 @@ public class AccountController {
     @PatchMapping("/deleteAccount")
     public ResponseEntity<ResponseMessage<AccountDTO>> deleteAccount(
             @RequestParam(value = "id", required = true) String AccountId,
-            @RequestHeader("Authorization") String bearerToken)  {
+            @RequestHeader("Authorization") String bearerToken) {
 
         //Delete "bearer" in token
         bearerToken = bearerToken.replace(AuthConstants.BEARER_PREFIX, "");
@@ -107,12 +109,12 @@ public class AccountController {
             Integer id = Integer.parseInt(AccountId);
             Optional<Account> accountDelete = accountRepository.findById(id);
             //Check if account has been deleted
-            if(accountDelete.get().isDeleteFlag())
+            if (accountDelete.get().isDeleteFlag())
                 return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ResponseMessage<>(ACCOUNT_IS_DELETED , HTTP_OK));
+                        .body(new ResponseMessage<>(ACCOUNT_IS_DELETED, HTTP_OK));
 
-//            If the account is deleted, it is the current account
-            if(accountDelete.get().getEmail().equals(currentUserEmail)){
+            //If the account is deleted, it is the current account
+            if (accountDelete.get().getEmail().equals(currentUserEmail)) {
                 return ResponseEntity.status(HttpStatus.OK)
                         .body(new ResponseMessage<>(ACCOUNT_DELETE_FAILD, HTTP_BAD_REQUEST));
             }
@@ -123,11 +125,10 @@ public class AccountController {
                     .body(new ResponseMessage<>(AppConstants.ACCOUNT_DELETE_SUCCESS, HTTP_OK));
 
 
-        }  catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ResponseMessage<>(AppConstants.ACCOUNT_ID_INVALID, HTTP_BAD_REQUEST));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ResponseMessage<>(AppConstants.ACCOUNT_DELETE_FAILD, HTTP_BAD_REQUEST));
         }
@@ -135,13 +136,13 @@ public class AccountController {
 
     @PutMapping("/update")
 
-        public ResponseEntity<ResponseMessage<AccountDTO>> updateAccount(@RequestParam(value = "id", required = true) Integer accountId,
-                                                 @RequestBody AccountDTO updatedAccount){
+    public ResponseEntity<ResponseMessage<AccountDTO>> updateAccount(@RequestParam(value = "id", required = true) Integer accountId,
+                                                                     @RequestBody AccountDTO updatedAccount) {
         try {
             AccountDTO accountUpdated = accountService.updatedAccount(accountId, updatedAccount);
             if (accountUpdated != null) {
                 return ResponseEntity.status(HttpStatus.OK)
-                        .body(new ResponseMessage(AppConstants.ACCOUNT_UPDATE_SUCCESS, HTTP_OK,accountUpdated));
+                        .body(new ResponseMessage(AppConstants.ACCOUNT_UPDATE_SUCCESS, HTTP_OK, accountUpdated));
             } else {
                 return ResponseEntity.status(HttpStatus.OK)
                         .body(new ResponseMessage(AppConstants.ACCOUNT_NOT_FOUND, HTTP_NOT_FOUND));
@@ -155,6 +156,7 @@ public class AccountController {
         }
 
     }
+
     @GetMapping("/getRoles")
     public ResponseEntity<ResponseMessage<List<Role>>> getAllRole() {
         try {
@@ -167,7 +169,7 @@ public class AccountController {
             }
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ResponseMessage(AppConstants.ROLES_GET_ALL_SUCCESS, HTTP_OK, listRole));
-        } catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ResponseMessage<>(ERROR_UNKNOWN, HTTP_BAD_REQUEST));
         }
