@@ -113,6 +113,7 @@ public class AccountServiceImpl implements AccountService {
             oldAccount.setLastname(updatedAccount.getLastname());
             oldAccount.setAddress(updatedAccount.getAddress());
             oldAccount.setPhone(updatedAccount.getPhone());
+            oldAccount.setUpdatedBy(getAuthenticatedAccount());
             //find role id by role name
             Optional<Role> roleUpdate = roleRepository.findByRoleName(updatedAccount.getRole());
             if(roleUpdate.isPresent()){

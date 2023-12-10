@@ -86,7 +86,6 @@ public class AccountController {
     }
 
     @PatchMapping("/deleteAccount")
-
     public ResponseEntity<ResponseMessage<AccountDTO>> deleteAccount(
             @RequestParam(value = "id", required = true) String AccountId,
             @RequestHeader("Authorization") String bearerToken)  {
