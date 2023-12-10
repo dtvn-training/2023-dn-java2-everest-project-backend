@@ -43,15 +43,15 @@ CREATE TABLE IF NOT EXISTS  campaigns (
             campaign_name VARCHAR(255),
             startdate TIMESTAMP,
             endDate TIMESTAMP,
-            budget BIGINT,
-            bid_amount BIGINT,
+            budget BIGINT DEFAULT 0,
+            bid_amount BIGINT DEFAULT 0,
             account_id INTEGER NOT NULL,
             create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             update_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             status BOOLEAN,
             delete_flag BOOLEAN DEFAULT FALSE,
-            usage_rate FLOAT,
-            used_amount INTEGER,
+            usage_rate FLOAT DEFAULT 0,
+            used_amount INTEGER DEFAULT 0,
             FOREIGN KEY (account_id) REFERENCES accounts(account_id)
 );
 
@@ -70,9 +70,9 @@ CREATE TABLE IF NOT EXISTS  creatives (
 
 
 
-INSERT INTO campaigns (campaign_name, startdate, endDate, budget, bid_amount, account_id, status, delete_flag, usage_rate, used_amount)
-VALUES
-('Campaign 1', '2023-01-01', '2023-02-01', 1000000, 500000, 1, true, false, 0.75, 20),
-('Campaign 2', '2023-02-01', '2023-03-01', 1500000, 700000, 2, false, false, 0.60, 15),
-('Campaign 3', '2023-03-01', '2023-04-01', 800000, 400000, 1, true, false, 0.90, 25);
+    INSERT INTO campaigns (campaign_name, startdate, endDate, budget, bid_amount, account_id, status, delete_flag, usage_rate, used_amount)
+    VALUES
+    ('Campaign 1', '2023-01-01', '2023-02-01', 1000000, 500000, 1, true, false, 0.75, 20),
+    ('Campaign 2', '2023-02-01', '2023-03-01', 1500000, 700000, 2, false, false, 0.60, 15),
+    ('Campaign 3', '2023-03-01', '2023-04-01', 800000, 400000, 1, true, false, 0.90, 25);
 

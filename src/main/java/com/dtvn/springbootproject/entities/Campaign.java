@@ -53,9 +53,9 @@ public class Campaign {
     @Column(name = "delete_flag", nullable = false)
     private boolean deleteFlag;
 
-    @Column(name = "usage_rate")
+    @Column(name = "usage_rate", columnDefinition = "FLOAT DEFAULT 0.0")
     private Float usageRate;
 
-    @Column(name = "used_amount")
+    @Column(name = "used_amount", columnDefinition = "INT DEFAULT 0")
     private Integer usedAmount;
 }

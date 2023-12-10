@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -96,7 +97,7 @@ public class CampaignController {
             @RequestParam(value = "id", required = true) String strCampaignId,
             @RequestPart(value = "file", required = true) MultipartFile file,
             @RequestPart(value = "data", required = true) CampaignAndCreativesDTO campaignAndCreativesDTO) throws IOException {
-
+        List<String> listMessage = new ArrayList<>();
         if(campaignService.isInteger(strCampaignId)){
             Integer campaignId = Integer.parseInt(strCampaignId);
             CreativeDTO creatives = campaignAndCreativesDTO.getCreativesDTO();

@@ -90,7 +90,6 @@ public class CampaignServiceImpl implements CampaignService {
         } else throw new ErrorException(AppConstants.CAMPAGIGN_UPDATE_FAILED, HttpConstants.HTTP_FORBIDDEN);
 
         } catch (Exception e){
-                System.out.println(e.getMessage());
                 throw new ErrorException(AppConstants.CAMPAGIGN_UPDATE_FAILED, HttpConstants.HTTP_FORBIDDEN);
         }
     }
@@ -100,6 +99,17 @@ public class CampaignServiceImpl implements CampaignService {
         CreativeDTO creativeDTO = campaignAndCreativesDTO.getCreativesDTO();
         Campaign campaignCreated =  new Campaign();
         campaignCreated = mapper.map(campaignDTO, Campaign.class);
+        campaignCreated.setUsageRate((float)0.0);
+        campaignCreated.setUsedAmount(0);
+        if(campaignCreated.getBidAmount() == null){
+            campaignCreated.setBidAmount(0L);
+        }
+        if(campaignCreated.getBudget() == null){
+            campaignCreated.setBudget(0L);
+        }
+        if(campaignCreated.getStatus() == null){
+            campaignCreated.setStatus(true);
+        }
         campaignCreated.setAccountId(account);
         campaignRepository.save(campaignCreated);
         Creatives creatives = new Creatives();
