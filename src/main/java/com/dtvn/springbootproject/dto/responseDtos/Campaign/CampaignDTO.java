@@ -10,6 +10,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CampaignDTO {
+    private Integer campaignId;
     private String name;
     private Timestamp startDate;
     private Timestamp endDate;
