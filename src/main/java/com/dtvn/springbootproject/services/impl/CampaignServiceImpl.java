@@ -19,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,6 +30,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+//@EnableScheduling
 public class CampaignServiceImpl implements CampaignService {
     @Autowired
     private CampaignRepository campaignRepository;
@@ -36,6 +39,7 @@ public class CampaignServiceImpl implements CampaignService {
     @Autowired
     private FirebaseService  firebaseService;
     private final ModelMapper mapper = new ModelMapper();
+//    private List<String> listTopUrl = new ArrayList<>();
 
     @Override
     public Page<CampaignDTO> getCampaign(String name, Pageable pageable) {
@@ -138,6 +142,7 @@ public class CampaignServiceImpl implements CampaignService {
            Optional<Creatives>  creatives =  creativeRepository.findByCampaignIdAndDeleteFlagIsFalse(Optional.ofNullable(campaigns.get(i)));
            if(creatives.isPresent()){
                imgUrl.add(creatives.get().getImageUrl());
+               creatives.get().setIsDisplay(true);
                //tru tien
                int useedAmount = campaigns.get(i).getUsedAmount();
                campaigns.get(i).setUsedAmount((int) (useedAmount + campaigns.get(i).getBidAmount()));
@@ -148,6 +153,16 @@ public class CampaignServiceImpl implements CampaignService {
         return imgUrl;
     }
 
+//    @Scheduled(fixedRate = 25000)
+//    public void scheduledMethod() {
+//        setListTopUrl(listBannerUrl());
+//    }
+//    public List<String> getListTopUrl(){
+//        return listTopUrl;
+//    }
+//    public void setListTopUrl(List<String> listTopUrl){
+//        this.listTopUrl = listTopUrl;
+//    }
     @Override
     public boolean isInteger(String number) {
         try {

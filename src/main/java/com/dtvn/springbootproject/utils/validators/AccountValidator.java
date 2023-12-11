@@ -66,23 +66,23 @@ public class AccountValidator {
     }
 
     private void validateName(String name, String fieldName,List<ValidationError> errors) {
-        if (name.isEmpty() && fieldName.contains("Firstname")) {
+        if (name.isEmpty() && "Firstname".contains(fieldName)) {
             errors.add(new ValidationError(ERROR_FIRSTNAME_REQUIRED));
         }
-        if (name.isEmpty() && fieldName.contains("Lastname")) {
+        if (name.isEmpty()  && "Lastname".contains(fieldName)) {
             errors.add(new ValidationError(ERROR_LASTNAME_REQUIRED));
         }
-        if (name.length() > MAX_FIRSTNAME_LENGTH && fieldName.contains("Firstname")) {
+        if (name.length() > MAX_FIRSTNAME_LENGTH && "Firstname".contains(fieldName)) {
             errors.add(new ValidationError(ERROR_FIRSTNAME_MAX_LENGTH));
         }
-        if (name.length() > MAX_LASTNAME_LENGTH && fieldName.contains("Lastname")) {
+        if (name.length() > MAX_LASTNAME_LENGTH && "Lastname".contains(fieldName)) {
             errors.add(new ValidationError(ERROR_LASTNAME_MAX_LENGTH));
         }
 
-        if (fieldName.contains("Firstname") && !name.matches(NAME_REGEX)) {
+        if ("Firstname".contains(fieldName) && !name.matches(NAME_REGEX)) {
             errors.add(new ValidationError(ERROR_FIRSTNAME_INVALID));
         }
-        if (fieldName.contains("Lastname") && !name.matches(NAME_REGEX)) {
+        if ("Lastname".contains(fieldName) && !name.matches(NAME_REGEX)) {
             errors.add(new ValidationError(ERROR_LASTNAME_INVALID));
         }
     }
