@@ -47,5 +47,7 @@ public class Creatives {
 
     @Column(name = "delete_flag", nullable = false, columnDefinition = "boolean default false")
     private Boolean deleteFlag;
+    @Column(name = "is_display", columnDefinition = "BOOLEAN DEFAULT False")
+    private Boolean isDisplay;
 
 }

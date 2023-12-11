@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface CampaignRepository extends JpaRepository<Campaign, Integer> {
@@ -22,4 +23,9 @@ public interface CampaignRepository extends JpaRepository<Campaign, Integer> {
 
         boolean existsByNameAndDeleteFlagIsFalse(String name);
 
+        @Query("SELECT c FROM Campaign c " +
+                "WHERE c.deleteFlag = false AND c.bidAmount <= (c.budget - c.usedAmount) " +
+                "GROUP BY c.campaignId, c.status, c.bidAmount " +
+                "ORDER BY c.bidAmount DESC")
+        List<Campaign> findTop5Campaigns(Pageable pageable);
 }

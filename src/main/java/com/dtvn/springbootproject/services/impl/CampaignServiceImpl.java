@@ -17,10 +17,13 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -98,18 +101,19 @@ public class CampaignServiceImpl implements CampaignService {
         CampaignDTO campaignDTO = campaignAndCreativesDTO.getCampaignDTO();
         CreativeDTO creativeDTO = campaignAndCreativesDTO.getCreativesDTO();
         Campaign campaignCreated =  new Campaign();
+
+        campaignDTO.setUsageRate((float)0.0);
+        campaignDTO.setUsedAmount(0);
+        if(campaignDTO.getBidAmount() == null){
+            campaignDTO.setBidAmount(0L);
+        }
+        if(campaignDTO.getBudget() == null){
+            campaignDTO.setBudget(0L);
+        }
+        if(campaignDTO.getStatus() == null){
+            campaignDTO.setStatus(true);
+        }
         campaignCreated = mapper.map(campaignDTO, Campaign.class);
-        campaignCreated.setUsageRate((float)0.0);
-        campaignCreated.setUsedAmount(0);
-        if(campaignCreated.getBidAmount() == null){
-            campaignCreated.setBidAmount(0L);
-        }
-        if(campaignCreated.getBudget() == null){
-            campaignCreated.setBudget(0L);
-        }
-        if(campaignCreated.getStatus() == null){
-            campaignCreated.setStatus(true);
-        }
         campaignCreated.setAccountId(account);
         campaignRepository.save(campaignCreated);
         Creatives creatives = new Creatives();
@@ -120,6 +124,28 @@ public class CampaignServiceImpl implements CampaignService {
         creatives.setDeleteFlag(false);
         Creatives creativesCreated = creativeRepository.save(creatives);
         return campaignAndCreativesDTO;
+    }
+    @Override
+    public List<String> listBannerUrl() {
+        List<Campaign> campaigns = null;
+        try {
+            campaigns = campaignRepository.findTop5Campaigns(PageRequest.of(0, 5));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        List<String> imgUrl = new ArrayList<>();
+        for(int i = 0; i < campaigns.size(); i++){
+           Optional<Creatives>  creatives =  creativeRepository.findByCampaignIdAndDeleteFlagIsFalse(Optional.ofNullable(campaigns.get(i)));
+           if(creatives.isPresent()){
+               imgUrl.add(creatives.get().getImageUrl());
+               //tru tien
+               int useedAmount = campaigns.get(i).getUsedAmount();
+               campaigns.get(i).setUsedAmount((int) (useedAmount + campaigns.get(i).getBidAmount()));
+               campaigns.get(i).setUsageRate((float) (campaigns.get(i).getUsedAmount() / campaigns.get(i).getBudget()));
+               campaignRepository.save(campaigns.get(i));
+           }
+        }
+        return imgUrl;
     }
 
     @Override

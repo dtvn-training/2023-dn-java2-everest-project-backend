@@ -189,6 +189,12 @@ public class CampaignController {
                     .body(new ResponseMessage<>(AppConstants.CAMPAGIGN_ALREADY_EXISTS, HTTP_BAD_REQUEST));
         }
     }
+    @PutMapping("/showBanner")
+    public ResponseEntity<ResponseMessage<List<String>>> showBanner(){
+        List<String> listUrlBanner = new ArrayList<>();
+
+        return null;
+    }
 
 
 }

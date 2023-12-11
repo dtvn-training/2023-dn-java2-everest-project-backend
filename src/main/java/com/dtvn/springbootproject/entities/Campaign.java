@@ -58,4 +58,5 @@ public class Campaign {
 
     @Column(name = "used_amount", columnDefinition = "INT DEFAULT 0")
     private Integer usedAmount;
+
 }
