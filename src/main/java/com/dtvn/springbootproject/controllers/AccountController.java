@@ -130,7 +130,7 @@ public class AccountController {
                     .body(new ResponseMessage<>(AppConstants.ACCOUNT_ID_INVALID, HTTP_BAD_REQUEST));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ResponseMessage<>(AppConstants.ACCOUNT_DELETE_FAILD, HTTP_BAD_REQUEST));
+                    .body(new ResponseMessage<>(ERROR_UNKNOWN, HTTP_INTERNAL_SERVER_ERROR));
         }
     }
 
