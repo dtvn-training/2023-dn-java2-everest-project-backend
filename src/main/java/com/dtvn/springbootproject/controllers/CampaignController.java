@@ -4,6 +4,7 @@ import com.dtvn.springbootproject.config.JwtService;
 import com.dtvn.springbootproject.constants.AppConstants;
 import com.dtvn.springbootproject.constants.AuthConstants;
 import com.dtvn.springbootproject.constants.HttpConstants;
+import com.dtvn.springbootproject.dto.responseDtos.Campaign.CampaginAndImgDTO;
 import com.dtvn.springbootproject.dto.responseDtos.Campaign.CampaignAndCreativesDTO;
 import com.dtvn.springbootproject.dto.responseDtos.Campaign.CampaignDTO;
 import com.dtvn.springbootproject.dto.responseDtos.Creative.CreativeDTO;
@@ -26,7 +27,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,10 +51,33 @@ public class CampaignController {
     private final JwtService jwtService;
     private final FirebaseService firebaseService;
     @GetMapping("/getCampaign")
-    public ResponseEntity<ResponseMessage<Page<CampaignDTO>>> getCampaign(
+    public ResponseEntity<ResponseMessage<Page<CampaginAndImgDTO>>> getCampaign(
             @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,required = false) String strPageNo,
-            @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) String strPageSize){
+            @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) String strPageSize,
+            @RequestParam(value = "startDate",required = false) String startDate,
+            @RequestParam(value = "endDate", required = false) String endDate){
+        if (startDate == null || startDate.isEmpty()) {
+            // Gán giá trị cho startDate nếu nó rỗng
+            startDate = "1990-01-01";
+        }
+        if (endDate == null || endDate.isEmpty()) {
+            // Nếu endDate rỗng, gán ngày hiện tại
+            endDate = LocalDate.now().toString();
+        }
+        Timestamp startTimestamp = null;
+        Timestamp endTimestamp = null;
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date parsedSDate = dateFormat.parse(startDate);
+            Date parsedEDate = dateFormat.parse(endDate);
+            startTimestamp = new Timestamp(parsedSDate.getTime());
+            endTimestamp = new Timestamp(parsedEDate.getTime());
+        } catch (ParseException e) {
+            // Xử lý lỗi chuyển đổi
+            e.printStackTrace();
+        }
+
         if(!campaignService.isInteger(strPageNo))
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ResponseMessage<>(AppConstants.PAGENO_INVALID, HTTP_BAD_REQUEST));
@@ -60,7 +89,8 @@ public class CampaignController {
         int pageSize = Integer.parseInt(strPageSize);
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(new ResponseMessage<>(AppConstants.CAMPAIGN_GET_SUCCESS, HttpConstants.HTTP_OK,campaignService.getCampaign(name,pageable)));
+                .body(new ResponseMessage<>(AppConstants.CAMPAIGN_GET_SUCCESS,
+                        HttpConstants.HTTP_OK,campaignService.getCampaign(name,startTimestamp, endTimestamp,pageable)));
     }
 
     @PatchMapping("/deleteCampagign")

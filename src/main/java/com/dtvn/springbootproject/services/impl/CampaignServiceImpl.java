@@ -1,6 +1,7 @@
 package com.dtvn.springbootproject.services.impl;
 import com.dtvn.springbootproject.constants.AppConstants;
 import com.dtvn.springbootproject.constants.HttpConstants;
+import com.dtvn.springbootproject.dto.responseDtos.Campaign.CampaginAndImgDTO;
 import com.dtvn.springbootproject.dto.responseDtos.Campaign.CampaignAndCreativesDTO;
 import com.dtvn.springbootproject.dto.responseDtos.Campaign.CampaignDTO;
 import com.dtvn.springbootproject.dto.responseDtos.Creative.CreativeDTO;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -24,6 +26,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -42,14 +45,22 @@ public class CampaignServiceImpl implements CampaignService {
 //    private List<String> listTopUrl = new ArrayList<>();
 
     @Override
-    public Page<CampaignDTO> getCampaign(String name, Pageable pageable) {
-        if(name == null || name.isEmpty()){
-            Page<Campaign> listCampaign = campaignRepository.getAllCampaign(pageable);
-            return listCampaign.map(campaign -> mapper.map(campaign, CampaignDTO.class ));
-        } else {
-            Page<Campaign> allCampaign = campaignRepository.findByName(name,pageable);
-            return allCampaign.map(campaign -> mapper.map(campaign, CampaignDTO.class ));
-        }
+    public Page<CampaginAndImgDTO> getCampaign(String name, Timestamp startDate, Timestamp endDate, Pageable pageable) {
+            Page<Campaign> listCampaign = campaignRepository.getCampaign(name,startDate,endDate, pageable);
+            List<CampaginAndImgDTO> listCampaignAndCreativesDTO = new ArrayList<>();
+            listCampaign.forEach(campaign -> {
+                CampaginAndImgDTO campaginAndImgDTO = new CampaginAndImgDTO();
+                 Optional<Creatives>  creatives =  creativeRepository.findByCampaignIdAndDeleteFlagIsFalse(Optional.ofNullable(campaign));
+                campaginAndImgDTO = mapper.map(campaign, CampaginAndImgDTO.class);
+                campaginAndImgDTO.setImgUrl(creatives.get().getImageUrl());
+                campaginAndImgDTO.setTitle(creatives.get().getTitle());
+                campaginAndImgDTO.setDescription(creatives.get().getDescription());
+                campaginAndImgDTO.setFinalUrl(creatives.get().getFinalUrl());
+                 listCampaignAndCreativesDTO.add(campaginAndImgDTO);
+             }
+            );
+            Page<CampaginAndImgDTO> page = new PageImpl<>(listCampaignAndCreativesDTO, pageable, listCampaignAndCreativesDTO.size());
+             return page;
     }
     @Override
     public void deleteCampaign(int campaignId) {
