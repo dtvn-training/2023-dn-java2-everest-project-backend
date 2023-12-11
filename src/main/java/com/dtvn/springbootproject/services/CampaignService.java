@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 public interface CampaignService {
     public Page<CampaignDTO> getCampaign(String name, Pageable pageable);
     public void deleteCampaign(int campaignId);
@@ -14,4 +16,5 @@ public interface CampaignService {
     public CampaignAndCreativesDTO createCampaign(CampaignAndCreativesDTO campaignAndCreativesDTO, Account account);
     public boolean isInteger(String number);
     public Campaign maptoEntity(CampaignDTO campaignDTO);
+    public List<String> listBannerUrl();
 }
