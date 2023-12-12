@@ -16,7 +16,8 @@ public interface CampaignRepository extends JpaRepository<Campaign, Integer> {
 //        Page<Campaign> findByName(@Param("name") String name, Pageable pageable);
         @Query("SELECT c FROM Campaign c WHERE c.deleteFlag = false " +
                 "AND (:name IS NULL OR LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%'))) " +
-                "AND ((:startdate IS NULL AND :enddate IS NULL) OR (c.startDate BETWEEN :startdate AND :enddate))")
+                "AND ((:startdate IS NULL AND :enddate IS NULL) OR (c.startDate BETWEEN :startdate AND :enddate))" +
+                " ORDER BY c.status desc")
         Page<Campaign> getCampaign(
                 @Param("name") String name,
                 @Param("startdate") Timestamp startdate,

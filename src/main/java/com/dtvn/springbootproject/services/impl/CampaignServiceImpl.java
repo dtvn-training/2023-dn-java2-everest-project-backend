@@ -46,21 +46,25 @@ public class CampaignServiceImpl implements CampaignService {
 
     @Override
     public Page<CampaginAndImgDTO> getCampaign(String name, Timestamp startDate, Timestamp endDate, Pageable pageable) {
-            Page<Campaign> listCampaign = campaignRepository.getCampaign(name,startDate,endDate, pageable);
-            List<CampaginAndImgDTO> listCampaignAndCreativesDTO = new ArrayList<>();
-            listCampaign.forEach(campaign -> {
-                CampaginAndImgDTO campaginAndImgDTO = new CampaginAndImgDTO();
-                 Optional<Creatives>  creatives =  creativeRepository.findByCampaignIdAndDeleteFlagIsFalse(Optional.ofNullable(campaign));
-                campaginAndImgDTO = mapper.map(campaign, CampaginAndImgDTO.class);
-                campaginAndImgDTO.setImgUrl(creatives.get().getImageUrl());
-                campaginAndImgDTO.setTitle(creatives.get().getTitle());
-                campaginAndImgDTO.setDescription(creatives.get().getDescription());
-                campaginAndImgDTO.setFinalUrl(creatives.get().getFinalUrl());
-                 listCampaignAndCreativesDTO.add(campaginAndImgDTO);
-             }
-            );
-            Page<CampaginAndImgDTO> page = new PageImpl<>(listCampaignAndCreativesDTO, pageable, listCampaignAndCreativesDTO.size());
-             return page;
+        Page<Campaign> listCampaign = campaignRepository.getCampaign(name,startDate,endDate, pageable);
+        List<CampaginAndImgDTO> listCampaignAndCreativesDTO = new ArrayList<>();
+        listCampaign.forEach(campaign -> {
+                    CampaginAndImgDTO campaginAndImgDTO = new CampaginAndImgDTO();
+                    Optional<Creatives>  creatives =  creativeRepository.findByCampaignIdAndDeleteFlagIsFalse(Optional.ofNullable(campaign));
+                    campaginAndImgDTO = mapper.map(campaign, CampaginAndImgDTO.class);
+                    campaginAndImgDTO.setImgUrl(creatives.get().getImageUrl());
+                    campaginAndImgDTO.setTitle(creatives.get().getTitle());
+                    campaginAndImgDTO.setDescription(creatives.get().getDescription());
+                    campaginAndImgDTO.setFinalUrl(creatives.get().getFinalUrl());
+                    listCampaignAndCreativesDTO.add(campaginAndImgDTO);
+                }
+        );
+        // Tạo một đối tượng Pageable mới với tổng số phần tử tính toán
+        Pageable newPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), listCampaign.getSort());
+
+        // Tạo đối tượng PageImpl với danh sách và Pageable mới
+        Page<CampaginAndImgDTO> page = new PageImpl<>(listCampaignAndCreativesDTO, newPageable, listCampaign.getTotalElements());
+        return page;
     }
     @Override
     public void deleteCampaign(int campaignId) {
