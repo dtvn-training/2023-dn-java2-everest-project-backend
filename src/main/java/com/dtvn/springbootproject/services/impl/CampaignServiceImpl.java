@@ -61,6 +61,7 @@ public class CampaignServiceImpl implements CampaignService {
         );
         // Tạo một đối tượng Pageable mới với tổng số phần tử tính toán
         Pageable newPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), listCampaign.getSort());
+
         // Tạo đối tượng PageImpl với danh sách và Pageable mới
         Page<CampaginAndImgDTO> page = new PageImpl<>(listCampaignAndCreativesDTO, newPageable, listCampaign.getTotalElements());
         return page;
