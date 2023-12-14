@@ -4,6 +4,7 @@ import com.dtvn.springbootproject.config.JwtService;
 import com.dtvn.springbootproject.constants.AppConstants;
 import com.dtvn.springbootproject.constants.AuthConstants;
 import com.dtvn.springbootproject.constants.HttpConstants;
+import com.dtvn.springbootproject.dto.responseDtos.Campaign.BannerDTO;
 import com.dtvn.springbootproject.dto.responseDtos.Campaign.CampaginAndImgDTO;
 import com.dtvn.springbootproject.dto.responseDtos.Campaign.CampaignAndCreativesDTO;
 import com.dtvn.springbootproject.dto.responseDtos.Campaign.CampaignDTO;
@@ -58,19 +59,26 @@ public class CampaignController {
             @RequestParam(value = "startDate",required = false) String startDate,
             @RequestParam(value = "endDate", required = false) String endDate){
         if (startDate == null || startDate.isEmpty()) {
-            startDate = "1990-01-01";
+            startDate = "";
         }
         if (endDate == null || endDate.isEmpty()) {
-            endDate = LocalDate.now().toString();
+            endDate = "";
         }
+
         Timestamp startTimestamp = null;
         Timestamp endTimestamp = null;
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            Date parsedSDate = dateFormat.parse(startDate);
-            Date parsedEDate = dateFormat.parse(endDate);
-            startTimestamp = new Timestamp(parsedSDate.getTime());
-            endTimestamp = new Timestamp(parsedEDate.getTime());
+//            Date parsedSDate = dateFormat.parse(startDate);
+            if (startDate != null && !startDate.isEmpty()) {
+                Date parsedSDate = dateFormat.parse(startDate);
+                startTimestamp = new Timestamp(parsedSDate.getTime());
+            }
+            if (endDate != null && !endDate.isEmpty()) {
+                Date parsedEDate = dateFormat.parse(endDate);
+                endTimestamp = new Timestamp(parsedEDate.getTime());
+            }
+
         } catch (ParseException e) {
             // Xử lý lỗi chuyển đổi
             e.printStackTrace();
@@ -210,12 +218,16 @@ public class CampaignController {
                     .body(new ResponseMessage<>(AppConstants.CREATIVES_ALREADY_EXISTS, HTTP_BAD_REQUEST));
         }
     }
-//    @PutMapping("/showBanner")
-//    public ResponseEntity<ResponseMessage<List<String>>> showBanner(){
-//        List<String> listUrlBanner = new ArrayList<>();
-//
-//        return null;
-//    }
+    @GetMapping("/showBanner")
+    public ResponseEntity<ResponseMessage<List<BannerDTO>>> showBanner(){
+        try{
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ResponseMessage<>(AppConstants.LIST_TOP_BANNER_GETSUCESS, HTTP_OK, campaignService.listBannerUrl()));
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ResponseMessage<>(AppConstants.LIST_TOP_BANNER_EMPTY, HTTP_BAD_REQUEST));
+        }
+    }
 
 
 }

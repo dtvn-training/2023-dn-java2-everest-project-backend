@@ -36,5 +36,7 @@ public class AppConstants {
     public static final String FIREBASE_SDK_JSON ="firebase/everest-471a5-firebase-adminsdk-jv4ts-e65c5b459d.json";
     public static final String FIREBASE_BUCKET = "everest-471a5.appspot.com";
     public static final String FIREBASE_PROJECT_ID ="everest-471a5";
+    public static final String LIST_TOP_BANNER_EMPTY = "List top banner is empty";
+    public static final String LIST_TOP_BANNER_GETSUCESS = "Get list top banner success";
 }
 

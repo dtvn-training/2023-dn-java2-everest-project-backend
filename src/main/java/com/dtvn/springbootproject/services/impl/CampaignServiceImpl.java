@@ -1,6 +1,7 @@
 package com.dtvn.springbootproject.services.impl;
 import com.dtvn.springbootproject.constants.AppConstants;
 import com.dtvn.springbootproject.constants.HttpConstants;
+import com.dtvn.springbootproject.dto.responseDtos.Campaign.BannerDTO;
 import com.dtvn.springbootproject.dto.responseDtos.Campaign.CampaginAndImgDTO;
 import com.dtvn.springbootproject.dto.responseDtos.Campaign.CampaignAndCreativesDTO;
 import com.dtvn.springbootproject.dto.responseDtos.Campaign.CampaignDTO;
@@ -33,7 +34,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-//@EnableScheduling
+@EnableScheduling
 public class CampaignServiceImpl implements CampaignService {
     @Autowired
     private CampaignRepository campaignRepository;
@@ -42,7 +43,7 @@ public class CampaignServiceImpl implements CampaignService {
     @Autowired
     private FirebaseService  firebaseService;
     private final ModelMapper mapper = new ModelMapper();
-//    private List<String> listTopUrl = new ArrayList<>();
+    private List<String> listTopUrl = new ArrayList<>();
 
     @Override
     public Page<CampaginAndImgDTO> getCampaign(String name, Timestamp startDate, Timestamp endDate, Pageable pageable) {
@@ -146,19 +147,20 @@ public class CampaignServiceImpl implements CampaignService {
         return campaignAndCreativesDTO;
     }
     @Override
-    public List<String> listBannerUrl() {
+    public List<BannerDTO> listBannerUrl() {
         List<Campaign> campaigns = null;
         try {
             campaigns = campaignRepository.findTop5Campaigns(PageRequest.of(0, 5));
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        List<String> imgUrl = new ArrayList<>();
+        List<BannerDTO> imgUrl = new ArrayList<>();
         for(int i = 0; i < campaigns.size(); i++){
            Optional<Creatives>  creatives =  creativeRepository.findByCampaignIdAndDeleteFlagIsFalse(Optional.ofNullable(campaigns.get(i)));
            if(creatives.isPresent()){
-               imgUrl.add(creatives.get().getImageUrl());
-               creatives.get().setIsDisplay(true);
+               BannerDTO bannerDTO = new BannerDTO(creatives.get().getCreativeId(),creatives.get().getImageUrl());
+               imgUrl.add(bannerDTO);
+//               creatives.get().setIsDisplay(true);
                //tru tien
                int useedAmount = campaigns.get(i).getUsedAmount();
                campaigns.get(i).setUsedAmount((int) (useedAmount + campaigns.get(i).getBidAmount()));
@@ -169,16 +171,6 @@ public class CampaignServiceImpl implements CampaignService {
         return imgUrl;
     }
 
-//    @Scheduled(fixedRate = 25000)
-//    public void scheduledMethod() {
-//        setListTopUrl(listBannerUrl());
-//    }
-//    public List<String> getListTopUrl(){
-//        return listTopUrl;
-//    }
-//    public void setListTopUrl(List<String> listTopUrl){
-//        this.listTopUrl = listTopUrl;
-//    }
     @Override
     public boolean isInteger(String number) {
         try {

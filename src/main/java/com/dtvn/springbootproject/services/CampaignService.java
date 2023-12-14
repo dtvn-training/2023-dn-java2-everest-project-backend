@@ -1,4 +1,5 @@
 package com.dtvn.springbootproject.services;
+import com.dtvn.springbootproject.dto.responseDtos.Campaign.BannerDTO;
 import com.dtvn.springbootproject.dto.responseDtos.Campaign.CampaginAndImgDTO;
 import com.dtvn.springbootproject.dto.responseDtos.Campaign.CampaignAndCreativesDTO;
 import com.dtvn.springbootproject.dto.responseDtos.Campaign.CampaignDTO;
@@ -18,5 +19,5 @@ public interface CampaignService {
     public CampaignAndCreativesDTO createCampaign(CampaignAndCreativesDTO campaignAndCreativesDTO, Account account);
     public boolean isInteger(String number);
     public Campaign maptoEntity(CampaignDTO campaignDTO);
-    public List<String> listBannerUrl();
+    public List<BannerDTO> listBannerUrl();
 }

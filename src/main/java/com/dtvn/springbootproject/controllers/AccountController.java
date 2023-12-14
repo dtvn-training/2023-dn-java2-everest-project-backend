@@ -154,7 +154,6 @@ public class AccountController {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ResponseMessage<>(ERROR_UNKNOWN, HTTP_BAD_REQUEST));
         }
-
     }
 
     @GetMapping("/getRoles")
