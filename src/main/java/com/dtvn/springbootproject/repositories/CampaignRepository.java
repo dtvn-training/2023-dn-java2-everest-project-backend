@@ -15,15 +15,17 @@ public interface CampaignRepository extends JpaRepository<Campaign, Integer> {
 //                "AND LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%'))")
 //        Page<Campaign> findByName(@Param("name") String name, Pageable pageable);
         @Query("SELECT c FROM Campaign c WHERE c.deleteFlag = false " +
-                "AND (:name IS NULL OR LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%'))) " +
-                "AND ((:startdate IS NULL AND :enddate IS NULL) OR (c.startDate BETWEEN :startdate AND :enddate))" +
-                " ORDER BY c.status desc")
+        "AND (:name IS NULL OR LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%'))) " +
+        "AND ((:startdate IS NULL AND :enddate IS NULL) OR " +
+        "(:startdate IS NOT NULL AND :enddate IS NULL AND c.startDate >= :startdate) OR " +
+        "(:startdate IS NULL AND :enddate IS NOT NULL AND c.startDate <= :enddate) OR " +
+        "(c.startDate BETWEEN :startdate AND :enddate)) " +
+        "ORDER BY c.status DESC")
         Page<Campaign> getCampaign(
                 @Param("name") String name,
                 @Param("startdate") Timestamp startdate,
                 @Param("enddate") Timestamp enddate,
                 Pageable pageable);
-
         @Query("SELECT c FROM Campaign c WHERE c.deleteFlag = false AND c.campaignId = :id")
         Optional<Campaign> findByIdAndDeleteFlagIsFalse(@Param("id") Integer id);
 //        @Query("Select a From Campaign a Where a.deleteFlag = false")

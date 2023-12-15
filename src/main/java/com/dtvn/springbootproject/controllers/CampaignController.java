@@ -58,18 +58,10 @@ public class CampaignController {
             @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) String strPageSize,
             @RequestParam(value = "startDate",required = false) String startDate,
             @RequestParam(value = "endDate", required = false) String endDate){
-        if (startDate == null || startDate.isEmpty()) {
-            startDate = "";
-        }
-        if (endDate == null || endDate.isEmpty()) {
-            endDate = "";
-        }
-
         Timestamp startTimestamp = null;
         Timestamp endTimestamp = null;
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-//            Date parsedSDate = dateFormat.parse(startDate);
             if (startDate != null && !startDate.isEmpty()) {
                 Date parsedSDate = dateFormat.parse(startDate);
                 startTimestamp = new Timestamp(parsedSDate.getTime());
@@ -77,10 +69,10 @@ public class CampaignController {
             if (endDate != null && !endDate.isEmpty()) {
                 Date parsedEDate = dateFormat.parse(endDate);
                 endTimestamp = new Timestamp(parsedEDate.getTime());
+
             }
 
         } catch (ParseException e) {
-            // Xử lý lỗi chuyển đổi
             e.printStackTrace();
         }
 
