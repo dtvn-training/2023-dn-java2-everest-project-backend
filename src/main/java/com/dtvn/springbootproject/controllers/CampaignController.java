@@ -220,6 +220,21 @@ public class CampaignController {
                     .body(new ResponseMessage<>(AppConstants.LIST_TOP_BANNER_EMPTY, HTTP_BAD_REQUEST));
         }
     }
+    @PutMapping("/minusBudget")
+    public ResponseEntity<ResponseMessage<String>> minusBudget( @RequestParam(value = "id", required = true) String strCampaignId){
+        if(!campaignService.isInteger(strCampaignId))
+            return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseMessage<>(AppConstants.CAMPAIGN_ID_INVALID, HTTP_BAD_REQUEST));
+        Integer campaignId = Integer.parseInt(strCampaignId);
+        try{
+            campaignService.minusBudget(campaignId);
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ResponseMessage<>(AppConstants.MINUS_BUDGET_FAILED, HTTP_BAD_REQUEST));
+        }
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseMessage<>(AppConstants.MINUS_BUDGET_SUCCESS, HTTP_BAD_REQUEST));
+    }
 
 
 }

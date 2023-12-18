@@ -20,4 +20,5 @@ public interface CampaignService {
     public boolean isInteger(String number);
     public Campaign maptoEntity(CampaignDTO campaignDTO);
     public List<BannerDTO> listBannerUrl();
+    public void minusBudget(Integer campaignId);
 }

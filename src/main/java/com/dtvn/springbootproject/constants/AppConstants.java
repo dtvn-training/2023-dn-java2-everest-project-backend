@@ -38,5 +38,7 @@ public class AppConstants {
     public static final String FIREBASE_PROJECT_ID ="everest-471a5";
     public static final String LIST_TOP_BANNER_EMPTY = "List top banner is empty";
     public static final String LIST_TOP_BANNER_GETSUCESS = "Get list top banner success";
+    public static final String MINUS_BUDGET_FAILED = "Minus budget failed";
+    public static final String MINUS_BUDGET_SUCCESS = "Minus budget success";
 }
 

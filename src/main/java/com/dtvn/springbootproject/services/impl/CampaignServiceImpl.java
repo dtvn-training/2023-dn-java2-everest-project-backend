@@ -160,15 +160,20 @@ public class CampaignServiceImpl implements CampaignService {
            if(creatives.isPresent()){
                BannerDTO bannerDTO = new BannerDTO(creatives.get().getCreativeId(),creatives.get().getImageUrl());
                imgUrl.add(bannerDTO);
-//               creatives.get().setIsDisplay(true);
-               //tru tien
-               int useedAmount = campaigns.get(i).getUsedAmount();
-               campaigns.get(i).setUsedAmount((int) (useedAmount + campaigns.get(i).getBidAmount()));
-               campaigns.get(i).setUsageRate((float) (campaigns.get(i).getUsedAmount() / campaigns.get(i).getBudget()));
                campaignRepository.save(campaigns.get(i));
            }
         }
         return imgUrl;
+    }
+    @Override
+    public void minusBudget(Integer campaignId) {
+        Optional<Campaign> campaign = campaignRepository.findById(campaignId);
+        if(campaign.isPresent()){
+            int usedAmount = campaign.get().getUsedAmount();
+            campaign.get().setUsedAmount((int)(usedAmount + campaign.get().getBidAmount()));
+            campaign.get().setUsageRate((float)(campaign.get().getUsedAmount() / campaign.get().getBudget()));
+            campaignRepository.save(campaign.get());
+        }
     }
 
     @Override
