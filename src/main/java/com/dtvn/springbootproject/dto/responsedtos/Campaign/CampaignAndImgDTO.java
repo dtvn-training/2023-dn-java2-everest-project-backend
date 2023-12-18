@@ -1,4 +1,4 @@
-package com.dtvn.springbootproject.dto.responseDtos.Campaign;
+package com.dtvn.springbootproject.dto.responsedtos.Campaign;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CampaginAndImgDTO {
+public class CampaignAndImgDTO {
     private Integer campaignId;
     private String name;
     private Timestamp startDate;

@@ -1,15 +1,15 @@
-package com.dtvn.springbootproject.dto.responseDtos.Account;
+package com.dtvn.springbootproject.dto.responsedtos.Account;
+
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 @Data
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class AccountResponseDTO {
+@AllArgsConstructor
+public class AccountDTO {
     private int accountId;
     private String firstname;
     private String lastname;

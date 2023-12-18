@@ -10,10 +10,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CampaignRepository extends JpaRepository<Campaign, Integer> {
-
-//        @Query("SELECT c FROM Campaign c WHERE c.deleteFlag = false " +
-//                "AND LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%'))")
-//        Page<Campaign> findByName(@Param("name") String name, Pageable pageable);
         @Query("SELECT c FROM Campaign c WHERE c.deleteFlag = false " +
         "AND (:name IS NULL OR LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%'))) " +
         "AND ((:startdate IS NULL AND :enddate IS NULL) OR " +
@@ -28,8 +24,6 @@ public interface CampaignRepository extends JpaRepository<Campaign, Integer> {
                 Pageable pageable);
         @Query("SELECT c FROM Campaign c WHERE c.deleteFlag = false AND c.campaignId = :id")
         Optional<Campaign> findByIdAndDeleteFlagIsFalse(@Param("id") Integer id);
-//        @Query("Select a From Campaign a Where a.deleteFlag = false")
-//        Page<Campaign> getAllCampaign(Pageable pageable);
 
         boolean existsByNameAndDeleteFlagIsFalse(String name);
 

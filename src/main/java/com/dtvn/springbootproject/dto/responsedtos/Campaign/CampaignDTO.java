@@ -1,4 +1,4 @@
-package com.dtvn.springbootproject.dto.responseDtos.Campaign;
+package com.dtvn.springbootproject.dto.responsedtos.Campaign;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
