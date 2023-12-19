@@ -164,7 +164,7 @@ public class CampaignServiceImpl implements CampaignService {
         if(campaign.isPresent()){
             int usedAmount = campaign.get().getUsedAmount();
             campaign.get().setUsedAmount((int)(usedAmount + campaign.get().getBidAmount()));
-            campaign.get().setUsageRate((float)((float) campaign.get().getUsedAmount() / (float) campaign.get().getBudget()));
+            campaign.get().setUsageRate(((float)((float) campaign.get().getUsedAmount() / (float) campaign.get().getBudget())) * 100);
             campaignRepository.save(campaign.get());
         }
     }
