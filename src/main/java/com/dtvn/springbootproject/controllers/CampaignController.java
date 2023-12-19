@@ -49,7 +49,7 @@ public class CampaignController {
     private final AccountRepository accountRepository;
     private final JwtService jwtService;
     private final FirebaseService firebaseService;
-    @GetMapping("/getCampaign")
+    @GetMapping("/get-campaign")
     public ResponseEntity<ResponseMessage<Page<CampaignAndImgDTO>>> getCampaign(
             @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,required = false) String strPageNo,
@@ -87,7 +87,7 @@ public class CampaignController {
                         HttpConstants.HTTP_OK,campaignService.getCampaign(name,startTimestamp, endTimestamp,pageable)));
     }
 
-    @PatchMapping("/deleteCampaign")
+    @PatchMapping("/delete-campaign")
     public ResponseEntity<ResponseMessage<CampaignDTO>> deleteCampaign(
             @RequestParam(value = "id", required = true) String strCampaginId){
         try{
@@ -116,7 +116,7 @@ public class CampaignController {
         }
     }
 
-    @PutMapping("/updateCampaign")
+    @PutMapping("/update-campaign")
     public ResponseEntity<ResponseMessage<CampaignAndCreativesDTO>> updateCampaign(
             @RequestParam(value = "id", required = true) String strCampaignId,
             @RequestPart(value = "file", required = true) MultipartFile file,
@@ -161,7 +161,7 @@ public class CampaignController {
         }
     }
 
-    @PostMapping(value = "/createCampagin",consumes = {"multipart/form-data"})
+    @PostMapping(value = "/create-Campaign",consumes = {"multipart/form-data"})
     public ResponseEntity<ResponseMessage<CampaignAndCreativesDTO>> createCamapagin(
             @RequestPart("file") MultipartFile file,
             @RequestPart("data") CampaignAndCreativesDTO campaignAndCreativesDTO,
@@ -205,7 +205,7 @@ public class CampaignController {
                     .body(new ResponseMessage<>(AppConstants.CREATIVES_ALREADY_EXISTS, HTTP_BAD_REQUEST));
         }
     }
-    @GetMapping("/showBanner")
+    @GetMapping("/show-banner")
     public ResponseEntity<ResponseMessage<List<BannerDTO>>> showBanner(){
         try{
             return ResponseEntity.status(HttpStatus.OK)
@@ -215,7 +215,7 @@ public class CampaignController {
                     .body(new ResponseMessage<>(AppConstants.LIST_TOP_BANNER_EMPTY, HTTP_BAD_REQUEST));
         }
     }
-    @PutMapping("/minusBudget")
+    @PutMapping("/minus-budget")
     public ResponseEntity<ResponseMessage<String>> minusBudget( @RequestParam(value = "id", required = true) String strCampaignId){
         if(!campaignService.isInteger(strCampaignId))
             return ResponseEntity.status(HttpStatus.OK)

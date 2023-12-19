@@ -40,7 +40,7 @@ public class AccountController {
     private final JwtService jwtService;
     private final RoleRepository roleRepository;
 
-    @PostMapping("/registerAccount")
+    @PostMapping("/register-account")
     public ResponseEntity<ResponseMessage<AccountResponseDTO>> registerAnAccount(
             @RequestBody AccountRegisterRequestDTO request
     ) {
@@ -67,7 +67,7 @@ public class AccountController {
     }
 
 
-    @GetMapping("/getAllAccount")
+    @GetMapping("/get-all-account")
     public ResponseEntity<ResponseMessage<Page<AccountDTO>>> getAccounts(@RequestParam(value = "emailOrName", required = false) String emailOrName,
                                                                          @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) String strPageNo,
                                                                          @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) String strPageSize) {
@@ -94,7 +94,7 @@ public class AccountController {
         }
 
     }
-    @PatchMapping("/deleteAccount")
+    @PatchMapping("/delete-account")
     public ResponseEntity<ResponseMessage<AccountDTO>> deleteAccount(
             @RequestParam(value = "id", required = true) String accountId,
             @RequestHeader("Authorization") String bearerToken) {
@@ -132,7 +132,7 @@ public class AccountController {
         }
     }
 
-    @PutMapping("/update")
+    @PutMapping("/update-account")
 
     public ResponseEntity<ResponseMessage<AccountDTO>> updateAccount(@RequestParam(value = "id", required = true) Integer accountId,
                                                                      @RequestBody AccountDTO updatedAccount) {
@@ -154,7 +154,7 @@ public class AccountController {
         }
     }
 
-    @GetMapping("/getRoles")
+    @GetMapping("/get-roles")
     public ResponseEntity<ResponseMessage<List<Role>>> getAllRole() {
         try {
             List<Role> listRole;
