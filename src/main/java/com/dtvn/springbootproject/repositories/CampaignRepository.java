@@ -28,8 +28,8 @@ public interface CampaignRepository extends JpaRepository<Campaign, Integer> {
         boolean existsByNameAndDeleteFlagIsFalse(String name);
 
         @Query("SELECT c FROM Campaign c " +
-                "WHERE c.deleteFlag = false AND c.bidAmount <= (c.budget - c.usedAmount) " +
-                "GROUP BY c.campaignId, c.status, c.bidAmount " +
+                "WHERE c.status = true AND c.deleteFlag = false AND c.bidAmount != 0 AND c.bidAmount <= (c.budget - c.usedAmount) " +
+                "GROUP BY c.campaignId, c.status, c.bidAmount, c.deleteFlag " +
                 "ORDER BY c.bidAmount DESC")
         List<Campaign> findTop5Campaigns(Pageable pageable);
 }
